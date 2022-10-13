@@ -8,13 +8,8 @@ board_4_resize_large = cv.resize(board_4_resize_small, [1500,1500], interpolatio
 (y,x,channels) = board_4_resize_small.shape
 
 print(y,x,channels)
- 
- 
-threshold = 87
 
-thresholded_img = thresholding_img()
 
-cv.imshow("Thresholded image", thresholding_img)
 cv.imshow("Board 4", board_4_resize_large)
 cv.waitKey()
 cv.destroyAllWindows()
