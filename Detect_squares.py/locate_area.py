@@ -2,7 +2,7 @@ import timeit
 import cv2 as cv
 import numpy as np 
 
-board_4 = cv.imread("King Domino dataset/Cropped and perspective corrected boards/4.jpg",1)
+board_4 = cv.imread(r"King Domino dataset\Cropped and perspective corrected boards\4.jpg",1)
 board_4_resize_small = cv.resize(board_4, [40,40], interpolation = cv.INTER_AREA)
 
 (y,x,channels) = board_4.shape
@@ -35,7 +35,7 @@ def threshold_b():
 
 thresholded_b = threshold_b()
 
-cv.imwrite("Thresholded_b.png", thresholded_b)
+cv.imwrite(r"Thresholded_b.png", thresholded_b)
 
 board_4_gray = cv.imread("Thresholded_b.png",0)
 
