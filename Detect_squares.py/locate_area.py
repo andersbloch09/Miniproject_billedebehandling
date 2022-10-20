@@ -39,24 +39,9 @@ cv.imwrite("Thresholded_b.png", thresholded_b)
 
 board_4_gray = cv.imread("Thresholded_b.png",0)
 
+kernel = np.ones((29,29), np.uint8)  
+dila_ocean = cv.dilate(board_4_gray, kernel, iterations=1)  
 
-
-def dilation_converter(): 
-    dilation_disk = np.array([255,255,255,255,255])
-    output_img = np.zeros(board_4_gray.shape, dtype=board_4_gray.dtype)
-    for j in range(1, board_4_gray.shape[1]-1):
-        for i in range(1, board_4_gray.shape[0]-1):
-            dila_cal = 0
-            thresholded_array = np.array([board_4_gray[i,j-1], board_4_gray[i-1,j], board_4_gray[i,j], board_4_gray[i+1,j], board_4_gray[i,j+1]])
-            print(np.any(thresholded_array == dilation_disk))
-            if np.any(thresholded_array == dilation_disk):
-                dila_cal = 255
-            else:
-                pass
-            output_img[i,j] = dila_cal
-    return(output_img)
-
-dila_ocean = dilation_converter()
 thresholded_b = threshold_b()
 
 cv.imshow("Board 4", board_4)
