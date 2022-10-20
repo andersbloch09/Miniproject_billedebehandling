@@ -1,4 +1,3 @@
-import timeit
 import cv2 as cv
 import numpy as np 
 
@@ -9,9 +8,7 @@ board_4_resize_small = cv.resize(board_4, [40,40], interpolation = cv.INTER_AREA
 
 print(y,x,channels)
 
-#board_4 = cv.medianBlur(board_4, 5)
-
-def threshold_b():
+def threshold_ocean():
     threshold = [(120,220),(0,90),(0,50)]
     output_image = np.zeros(board_4.shape, dtype=board_4.dtype)
     b,g,r = 0,0,0
@@ -33,16 +30,23 @@ def threshold_b():
             
     return(output_image)          
 
-thresholded_b = threshold_b()
+threshold_o = threshold_ocean()
 
-cv.imwrite(r"Thresholded_b.png", thresholded_b)
+def multiply():
+    b = threshold_o[:,:,0]
+    g = threshold_o[:,:,1]
+    r = threshold_o[:,:,2]
+
+    threshold_ocean_gray = (b//3)+(g//3)+(r//3)    
+    
+    return(threshold_ocean_gray)
 
 board_4_gray = cv.imread("Thresholded_b.png",0)
 
 kernel = np.ones((29,29), np.uint8)  
 dila_ocean = cv.dilate(board_4_gray, kernel, iterations=1)  
 
-thresholded_b = threshold_b()
+thresholded_b = threshold_o()
 
 cv.imshow("Board 4", board_4)
 cv.imshow("Thresholded for blue", thresholded_b)
