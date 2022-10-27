@@ -53,5 +53,3 @@ cv.imshow("Thresholded for blue", thresholded_b)
 cv.imshow("Dilation_b", dila_ocean)
 cv.waitKey()
 cv.destroyAllWindows()
-
-
