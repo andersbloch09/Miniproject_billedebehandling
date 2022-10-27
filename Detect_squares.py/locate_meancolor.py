@@ -1,6 +1,5 @@
 import numpy as np 
-import cv2 as cv 
-import time 
+import cv2 as cv  
 
 img = cv.imread("King Domino dataset/Cropped and perspective corrected boards/4.jpg",1)
 
@@ -20,21 +19,14 @@ def mean_cal():
                    b = b + b.mean()
                    g = g + g.mean()
                    r = r + r.mean()
-                
+                   mean_array[i,j]=(b,g,r)
 
     return(mean_array)
-        
 
 mean_board = mean_cal()
+mean_resized = cv.resize(mean_board, [500,500], interpolation = cv.INTER_AREA)
 
-cv.imshow("mean_board", mean_board)
+cv.imshow("mean_resized", mean_resized)
 #cv.imshow("img",img)
 cv.waitKey()
 cv.destroyAllWindows()
-
-
-
-
-
-
-
