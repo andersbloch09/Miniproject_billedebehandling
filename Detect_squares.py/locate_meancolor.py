@@ -17,9 +17,9 @@ def mean_cal():
                    b = img[i,j,0]
                    g = img[i,j,1]
                    r = img[i,j,2]
-                   b = b + b.mean
-                   g = g + g.mean
-                   r = r + r.mean 
+                   b = b + b.mean()
+                   g = g + g.mean()
+                   r = r + r.mean()
                 
 
     return(mean_array)
