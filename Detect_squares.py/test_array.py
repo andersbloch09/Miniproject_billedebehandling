@@ -1,16 +1,9 @@
 import pyautogui
 import time
+import numpy as np
 
-while 1:
-    x, y = pyautogui.position()
-    r,g,b = pyautogui.pixel(x, y)
-    print(r,g,b)
-    time.sleep(0.1)
-    
-    
-    hav = 0,86,179
-    grøn = 89,144,35
-    gul = 190,168,7
-    skov = 37,72,17
-    mudder = 137,131,98 and 99,82,46
-    
+array_something = np.array([1,2,3,4,5,6,8,9,10])
+
+mean_array = array_something.mean()
+
+print(mean_array)
