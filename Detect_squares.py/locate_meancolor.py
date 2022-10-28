@@ -2,7 +2,7 @@ import numpy as np
 import cv2 as cv
 import time 
 
-img = cv.imread(r"King Domino dataset\Cropped and perspective corrected boards\4.jpg",1)
+img = cv.imread(r"King Domino dataset/Cropped and perspective corrected boards/4.jpg",1)
 
 mean_array = np.zeros((5, 5, 3), dtype='uint8')
 board_size = 5
@@ -16,9 +16,9 @@ def mean_cal():
                    b = img[i,j,0]
                    g = img[i,j,1]
                    r = img[i,j,2]
-                   b_mean = b.mean
-                   g_mean = g.mean
-                   r_mean = r.mean
+                   b_mean = b.mean()
+                   g_mean = g.mean()
+                   r_mean = r.mean()
             mean_array[j,i] = (b_mean, g_mean, r_mean)
 
     return(mean_array)
