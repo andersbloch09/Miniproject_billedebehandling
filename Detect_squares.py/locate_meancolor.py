@@ -1,6 +1,6 @@
 import numpy as np 
 import cv2 as cv
-import time 
+import statistics as sta
 
 img = cv.imread(r"King Domino dataset/Cropped and perspective corrected boards/4.jpg",1)
 
@@ -10,15 +10,21 @@ board_size = 5
 def mean_cal():
     for j in range(board_size):
         for i in range(board_size):
-            for y in range(j*100, j*100+100):
-                for x in range(i*100, i*100+100): 
+            b_mean = []
+            g_mean = []
+            r_mean = []
+            for y in range(j*100, 100+j*100):
+                for x in range(i*100, 100+i*100): 
                    print(x,y) 
                    b = img[x,y,0]
                    g = img[x,y,1]
                    r = img[x,y,2]
-                   b_mean = b.mean()
-                   g_mean = g.mean()
-                   r_mean = r.mean()
+                   b_mean.append(b)
+                   g_mean.append(g)
+                   r_mean.append(r)
+            b_mean = sta.mean(b_mean)
+            g_mean = sta.mean(g_mean)
+            r_mean = sta.mean(r_mean)
             mean_array[i,j] = (b_mean, g_mean, r_mean)
 
     return(mean_array)
