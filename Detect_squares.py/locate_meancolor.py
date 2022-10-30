@@ -13,13 +13,13 @@ def mean_cal():
             for y in range(j*100, j*100+100):
                 for x in range(i*100, i*100+100): 
                    print(x,y) 
-                   b = img[i,j,0]
-                   g = img[i,j,1]
-                   r = img[i,j,2]
+                   b = img[x,y,0]
+                   g = img[x,y,1]
+                   r = img[x,y,2]
                    b_mean = b.mean()
                    g_mean = g.mean()
                    r_mean = r.mean()
-            mean_array[j,i] = (b_mean, g_mean, r_mean)
+            mean_array[i,j] = (b_mean, g_mean, r_mean)
 
     return(mean_array)
 
