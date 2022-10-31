@@ -31,12 +31,12 @@ def mean_cal():
 mean_board = mean_cal()
 th_corn = [(0,31),(120,178),(140,220)]
 th_ocean = [(90,210),(58,150),(0,70)]
-th_meadow = [(7,49),(94,160),(77,140)]
+th_meadow = [(7,48),(94,160),(77,140)]
 th_forrest = [(10,100),(34,80),(28,80)]
 th_mine = [(30,47),(53,75),(60,92)]
-th_swamp = [(50,80),(90,120),(100,130)]
+th_swamp = [(43,80),(90,120),(100,130)]
 def find_landscape():
-    landscape_map = np.zeros((5, 5), dtype='U')
+    landscape_map = np.zeros((5, 5),dtype='U')
     for j in range(board_size):
         for i in range(board_size):
             b,g,r = mean_board[i,j]
