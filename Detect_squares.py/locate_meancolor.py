@@ -2,7 +2,7 @@ import numpy as np
 import cv2 as cv
 import statistics as sta
 
-img = cv.imread(r"King Domino dataset/Cropped and perspective corrected boards/23.jpg",1)
+img = cv.imread(r"King Domino dataset/Cropped and perspective corrected boards/19.jpg",1)
 board_size = 5
 
 def mean_cal():
@@ -30,14 +30,13 @@ def mean_cal():
 
 mean_board = mean_cal()
 
-
 def find_landscape():
-    th_corn = [(0,31),(120,178),(140,220)]
-    th_ocean = [(90,210),(58,150),(0,70)]
-    th_meadow = [(7,48),(94,160),(77,140)]
-    th_forrest = [(10,100),(34,80),(28,80)]
-    th_mine = [(30,47),(53,75),(60,92)]
-    th_swamp = [(41,80),(80,120),(90,130)]
+    th_corn = [(0,31),(110,178),(130,220)]
+    th_ocean = [(90,210),(46,150),(0,70)]
+    th_meadow = [(7,51),(80,160),(55,145)]
+    th_forrest = [(7,100),(34,80),(28,80)]
+    th_mine = [(30,47),(53,76),(60,92)]
+    th_swamp = [(41,95),(70,127),(84,133)]
     landscape_map = np.zeros((5, 5),dtype='U')
     for j in range(board_size):
         for i in range(board_size):
@@ -45,22 +44,30 @@ def find_landscape():
             print(i,j)
             print(mean_board[i,j])
             if b >= th_corn[0][0] and b <= th_corn[0][1] and g >= th_corn[1][0] and g <= th_corn[1][1] and r >= th_corn[2][0] and r <= th_corn[2][1]:
-                landscape_map[i,j] = "corn"
+                if r - g > 30: 
+                    landscape_map[i,j] = "not figured"
+                else: 
+                    landscape_map[i,j] = "corn"
             elif b >= th_ocean[0][0] and b <= th_ocean[0][1] and g >= th_ocean[1][0] and g <= th_ocean[1][1] and r >= th_ocean[2][0] and r <= th_ocean[2][1]:
                 landscape_map[i,j] = "ocean"
             elif b >= th_meadow[0][0] and b <= th_meadow[0][1] and g >= th_meadow[1][0] and g <= th_meadow[1][1] and r >= th_meadow[2][0] and r <= th_meadow[2][1]:
-                landscape_map[i,j] = "meadow"
                 if g < r: 
-                    landscape_map[i,j] = "not figured"
+                    if r - g > 30: 
+                        landscape_map[i,j] = "not figured"
+                    else:
+                        landscape_map[i,j] = "swamp"
                 else: 
                     landscape_map[i,j] = "meadow"
             elif b >= th_mine[0][0] and b <= th_mine[0][1] and g >= th_mine[1][0] and g <= th_mine[1][1] and r >= th_mine[2][0] and r <= th_mine[2][1]:
-                if g - b > 30: 
-                    landscape_map[i,j] = "swamp"
+                if g - b > 35: 
+                    if r < 84:
+                        landscape_map[i,j] = "forrest"
+                    else:
+                        landscape_map[i,j] = "swamp"
                 else:
                     landscape_map[i,j] = "digging"
             elif b >= th_forrest[0][0] and b <= th_forrest[0][1] and g >= th_forrest[1][0] and g <= th_forrest[1][1] and r >= th_forrest[2][0] and r <= th_forrest[2][1]:
-                if r > g: 
+                if r > 5+g: 
                     landscape_map[i,j] = "digging"
                 else:
                     landscape_map[i,j] = "forrest"
