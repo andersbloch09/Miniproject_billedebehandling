@@ -2,7 +2,7 @@ import numpy as np
 import cv2 as cv
 import statistics as sta
 
-img = cv.imread(r"King Domino dataset/Cropped and perspective corrected boards/14.jpg",1)
+img = cv.imread(r"King Domino dataset/Cropped and perspective corrected boards/23.jpg",1)
 board_size = 5
 
 def mean_cal():
@@ -38,7 +38,7 @@ def find_landscape():
     th_meadow = [(7,48),(94,160),(77,140)]
     th_forrest = [(10,100),(34,80),(28,80)]
     th_mine = [(30,47),(53,75),(60,92)]
-    th_swamp = [(43,80),(90,120),(100,130)]
+    th_swamp = [(43,80),(88,120),(100,130)]
     landscape_map = np.zeros((5, 5),dtype='U')
     for j in range(board_size):
         for i in range(board_size):
