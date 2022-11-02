@@ -119,6 +119,12 @@ def locate_connections():
                         object_array[i,j] = object_array[i-1,j]
                     elif object_array[i,j-1] == True:
                         object_array[i,j] = object_array[i,j-1]
+                        if object_array[i,j-1] == a-1:
+                            for i in range(board_size):
+                                for j in range(board_size):
+                                    if object_array[i,j] == a: 
+                                        object_array[i,j] = a-1 
+                                    
                 else:
                     a += 1
                     object_array[i,j] = a 
