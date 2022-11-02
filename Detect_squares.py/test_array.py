@@ -1,9 +1,23 @@
-import pyautogui
-import time
+import cv2 as cv
 import numpy as np
+import math
 
-array_something = np.array([1,2,3,4,5,6,8,9,10])
+img = cv.imread("mean_board_25.png",1)
 
-mean_array = array_something.mean()
+cv.imshow("mean_board_25", img)
+board_size = 5 
 
-print(mean_array)
+for j in range(board_size):
+    for i in range(board_size):
+        print(img[i,j])
+
+
+
+d = math.sqrt((img[i,j,0]-img[i,j,0])^2)
+print(d)
+
+
+
+
+cv.waitKey(0)
+cv.destroyAllWindows()
