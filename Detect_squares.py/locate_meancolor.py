@@ -110,20 +110,19 @@ def locate_connections():
     a = 0
     for i in range(board_size):
         for j in range(board_size):
-            print(a)
-            print("input_crown = ", input_crown)
             if area_layout[i,j] == input_crown:
                 object_array[i,j] = a 
-                if object_array[i-1,j] or object_array[i,j-1] == True:
-                    if object_array[i-1,j] == True:
-                        object_array[i,j] = object_array[i-1,j]
-                    elif object_array[i,j-1] == True:
+                if object_array[i,j-1] != 0 or object_array[i-1,j] != 0:
+                    if object_array[i,j-1] != 0:
                         object_array[i,j] = object_array[i,j-1]
-                        if object_array[i,j-1] == a-1:
-                            for i in range(board_size):
-                                for j in range(board_size):
-                                    if object_array[i,j] == a: 
-                                        object_array[i,j] = a-1 
+                    if object_array[i-1,j] != 0:
+                        object_array[i,j] = object_array[i-1,j]
+                        if object_array[i-1,j] == a-1:
+                            for k in range(board_size):
+                                for l in range(board_size):
+                                    if object_array[k,l] == a: 
+                                        object_array[k,l] = a-1 
+                            a -= 1
                                     
                 else:
                     a += 1
