@@ -2,7 +2,7 @@ import numpy as np
 import cv2 as cv
 import statistics as sta
 
-img = cv.imread(r"King Domino dataset/Cropped and perspective corrected boards/14.jpg",1)
+img = cv.imread(r"King Domino dataset/Cropped and perspective corrected boards/19.jpg",1)
 board_size = 5
 
 def mean_cal():
@@ -68,3 +68,4 @@ cv.imshow("mean resized", mean_resized)
 cv.imshow("img",img)
 cv.waitKey()
 cv.destroyAllWindows()
+
