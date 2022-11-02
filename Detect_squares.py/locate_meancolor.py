@@ -144,3 +144,4 @@ cv.imshow("mean resized", mean_resized)
 cv.imshow("img",img)
 cv.waitKey()
 cv.destroyAllWindows()
+
