@@ -2,7 +2,7 @@ import numpy as np
 import cv2 as cv
 import statistics as sta
 
-img = cv.imread(r"King Domino dataset/Cropped and perspective corrected boards/19.jpg",1)
+img = cv.imread(r"King Domino dataset/Cropped and perspective corrected boards/4.jpg",1)
 board_size = 5
 
 def mean_cal():
@@ -105,7 +105,7 @@ print(area_layout)
 
 def locate_connections():
     object_array = np.zeros((5, 5), dtype="uint8")
-    input_crown = area_layout[0,0] 
+    input_crown = area_layout[0,1] 
     print("input_crown = ", input_crown)
     a = 0
     for i in range(board_size):
