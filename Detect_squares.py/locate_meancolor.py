@@ -131,7 +131,7 @@ def locate_connections():
                 pass
 
 
-    print(object_array)          
+    return(object_array)     
 
 
 locate_connections()
