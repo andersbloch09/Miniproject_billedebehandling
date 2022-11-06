@@ -1,34 +1,85 @@
 import numpy as np 
 import cv2 as cv
 import statistics as sta
+import math 
 
 
 class image_handler():
     def __init__(self):
-        self.img = cv.imread(r"King Domino dataset/Cropped and perspective corrected boards/3.jpg",1)
+        self.img = cv.imread(r"King Domino dataset/Cropped and perspective corrected boards/51.jpg",1)
         self.board_size = 5
     
     def find_tower(self):#Function to find the tower and change the color values to 0 to locate it easier.
+        #This is for blue castles with no house but kinda works for green and pink as well
         self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
-        self.template_tower_n_h = cv.imread(r"Detect_squares.py\Assests\gray_castle_n_h.png", 0)#tower with no house on.
-        self.resized_template_tower_n_h = cv.resize(self.template_tower_n_h, [100,100], interpolation = cv.INTER_AREA)
-        methods = [cv.TM_SQDIFF, cv.TM_SQDIFF_NORMED]
-        h, w = self.resized_template_tower_n_h.shape
+        self.template_tower_n_h = cv.imread(r"Detect_squares.py\Assests\castle_n_h_blue_rotated.png", 0)#tower with no house on.
+        methods =  [cv.TM_CCOEFF, cv.TM_CCOEFF_NORMED, cv.TM_CCORR,
+            cv.TM_CCORR_NORMED, cv.TM_SQDIFF]
+        h, w = self.template_tower_n_h.shape
+        for i in range(4):
+            for method in methods:
+                if i > 0: 
+                    self.template_tower_n_h = cv.rotate(self.template_tower_n_h, cv.ROTATE_90_CLOCKWISE)
+                gray_copy = self.gray.copy()
+                res = cv.matchTemplate(gray_copy, self.template_tower_n_h, method)
+                min_val, self.max_val, min_loc, max_loc = cv.minMaxLoc(res)
+                if method in [cv.TM_SQDIFF, cv.TM_SQDIFF_NORMED]:
+                    location = min_loc
+                else: 
+                    location = max_loc
+                if math.isclose(self.max_val, 1, abs_tol=0.01) == True:
+                    print(method)
+                    bottom_right = (location[0] + w, location[1] + h)
+                    self.img = cv.rectangle(self.img, location, bottom_right, 0, -1)
+                else: 
+                    pass
+        #This is for yellow castles with no house
+        self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
+        self.template_tower_n_h = cv.imread(r"Detect_squares.py\Assests\castle_n_h_yellow.png", 0)#tower with no house on.
+        methods =  [cv.TM_CCOEFF, cv.TM_CCOEFF_NORMED, cv.TM_CCORR,
+            cv.TM_CCORR_NORMED, cv.TM_SQDIFF]
+        h, w = self.template_tower_n_h.shape
+        for i in range(4):
+            for method in methods:
+                if i > 0: 
+                    self.template_tower_n_h = cv.rotate(self.template_tower_n_h, cv.ROTATE_90_CLOCKWISE)
+                gray_copy = self.gray.copy()
+                res = cv.matchTemplate(gray_copy, self.template_tower_n_h, method)
+                min_val, self.max_val, min_loc, max_loc = cv.minMaxLoc(res)
+                if method in [cv.TM_SQDIFF, cv.TM_SQDIFF_NORMED]:
+                    location = min_loc
+                else: 
+                    location = max_loc
+                if math.isclose(self.max_val, 1, abs_tol=0.015) == True:
+                    print(method)
+                    bottom_right = (location[0] + w, location[1] + h)
+                    self.img = cv.rectangle(self.img, location, bottom_right, 0, -1)
+                else: 
+                    pass
+         #This is for green castles with no house
+        self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
+        self.template_tower_n_h = cv.imread(r"Detect_squares.py\Assests\castle_n_h_green.png", 0)#tower with no house on.
+        methods =  [cv.TM_CCOEFF, cv.TM_CCOEFF_NORMED, cv.TM_CCORR,
+            cv.TM_CCORR_NORMED, cv.TM_SQDIFF]
+        h, w = self.template_tower_n_h.shape
+        for i in range(4):
+            for method in methods:
+                if i > 0: 
+                    self.template_tower_n_h = cv.rotate(self.template_tower_n_h, cv.ROTATE_90_CLOCKWISE)
+                gray_copy = self.gray.copy()
+                res = cv.matchTemplate(gray_copy, self.template_tower_n_h, method)
+                min_val, self.max_val, min_loc, max_loc = cv.minMaxLoc(res)
+                if method in [cv.TM_SQDIFF, cv.TM_SQDIFF_NORMED]:
+                    location = min_loc
+                else: 
+                    location = max_loc
+                if math.isclose(self.max_val, 1, abs_tol=0.015) == True:
+                    print(method)
+                    bottom_right = (location[0] + w, location[1] + h)
+                    self.img = cv.rectangle(self.img, location, bottom_right, 0, -1)
+                else: 
+                    pass
 
-        for method in methods:
-            gray_copy = self.gray.copy()
-
-            res = cv.matchTemplate(gray_copy, self.resized_template_tower_n_h, method)
-            min_val, max_val, min_loc, max_loc = cv.minMaxLoc(res)
-            print(min_loc,max_loc)
-            location = min_loc
-
-            bottom_right = (location[0] + w, location[1] + h)
-            
-            self.img = cv.rectangle(self.img, location, bottom_right, 0, -1)
-             
-            
-        
     def mean_cal(self):
         self.mean_array = np.zeros((5, 5, 3), dtype='uint8')
         for j in range(self.board_size):
@@ -38,7 +89,7 @@ class image_handler():
                 r_mean = []
                 for y in range(j*100, 100+j*100):
                     for x in range(i*100, 100+i*100): 
-                        print(x,y) 
+                        #print(x,y) 
                         b = self.img[x,y,0]
                         g = self.img[x,y,1]
                         r = self.img[x,y,2]
@@ -66,19 +117,17 @@ class image_handler():
         th_mine = [(30,47),(53,76),(60,92)]
         th_swamp = [(41,95),(70,127),(84,133)]
         th_tower = [(0,15),(0,15),(0,15)]
-        self.landscape_map = np.zeros((5, 5),dtype="U")
+        self.landscape_map = np.zeros((5, 5), dtype="U")
         self.area_map = np.zeros((5, 5),dtype="uint8")
         for j in range(self.board_size):
             for i in range(self.board_size):
                 b,g,r = self.mean_array[i,j]
                 print(i,j)
                 print(self.mean_array[i,j])
-                if b >= th_tower[0][0] and b <= th_tower[0][1] and g >= th_tower[1][0] and g <= th_tower[1][1] and r >= th_tower[2][0] and r <= th_tower[2][1]:
+                if b < th_tower[0][1] and g < th_tower[1][1] and r < th_tower[2][1]:
                     self.landscape_map[i,j] = "tower"
                     self.area_map[i,j] = tower
-                else: 
-                    pass
-                if b >= th_corn[0][0] and b <= th_corn[0][1] and g >= th_corn[1][0] and g <= th_corn[1][1] and r >= th_corn[2][0] and r <= th_corn[2][1]:
+                elif b >= th_corn[0][0] and b <= th_corn[0][1] and g >= th_corn[1][0] and g <= th_corn[1][1] and r >= th_corn[2][0] and r <= th_corn[2][1]:
                     if r - g > 30: 
                         self.landscape_map[i,j] = "not figured"
                         self.area_map[i,j] = not_figured
@@ -143,14 +192,12 @@ class image_handler():
                                     for l in range(self.board_size):
                                         if self.object_array[k,l] == a: 
                                             self.object_array[k,l] = a-1 
-                                a -= 1
-                                        
+                                a -= 1                
                     else:
                         a += 1
                         self.object_array[i,j] = a 
                 else: 
                     pass
-
 
 pic = image_handler()
 pic.find_tower()
@@ -160,6 +207,7 @@ pic.locate_connections()
 
 print(pic.object_array)
 print(pic.landscape_map)
+print(pic.max_val)
 
 mean_resized = cv.resize(pic.mean_array, [500,500], interpolation = cv.INTER_AREA)
 
@@ -167,4 +215,3 @@ cv.imshow("mean resized", mean_resized)
 cv.imshow("img",pic.img)
 cv.waitKey()
 cv.destroyAllWindows()
-
