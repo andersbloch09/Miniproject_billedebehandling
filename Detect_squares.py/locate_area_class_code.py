@@ -3,7 +3,6 @@ import cv2 as cv
 import statistics as sta
 
 
-
 class image_handler():
     def __init__(self):
         self.img = cv.imread(r"King Domino dataset/Cropped and perspective corrected boards/4.jpg",1)
@@ -11,6 +10,7 @@ class image_handler():
     
     def find_castle(self):
         self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
+        cv.imshow("gray scale", self.gray)
         
     
     def mean_cal(self):
@@ -133,6 +133,7 @@ class image_handler():
 
 
 pic = image_handler()
+pic.find_castle()
 pic.mean_cal()
 pic.find_landscape()
 pic.locate_connections()
