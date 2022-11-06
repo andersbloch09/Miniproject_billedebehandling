@@ -1,23 +1,25 @@
-import cv2 as cv
 import numpy as np
-import math
+import cv2
 
-img = cv.imread("mean_board_25.png",1)
+img = cv2.resize(cv2.imread(r'King Domino dataset\Cropped and perspective corrected boards\4.jpg', 0), (0, 0), fx=0.8, fy=0.8)
+template = cv2.resize(cv2.imread(r'Detect_squares.py\Assests\gray_castle_n_h.png', 0), (0, 0), fx=0.8, fy=0.8)
+h, w = template.shape
 
-cv.imshow("mean_board_25", img)
-board_size = 5 
+methods = [cv2.TM_CCOEFF, cv2.TM_CCOEFF_NORMED, cv2.TM_CCORR,
+            cv2.TM_CCORR_NORMED, cv2.TM_SQDIFF, cv2.TM_SQDIFF_NORMED]
 
-for j in range(board_size):
-    for i in range(board_size):
-        print(img[i,j])
+for method in methods:
+    img2 = img.copy()
 
+    result = cv2.matchTemplate(img2, template, method)
+    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
+    if method in [cv2.TM_SQDIFF, cv2.TM_SQDIFF_NORMED]:
+        location = min_loc
+    else:
+        location = max_loc
 
-
-d = math.sqrt((img[i,j,0]-img[i,j,0])^2)
-print(d)
-
-
-
-
-cv.waitKey(0)
-cv.destroyAllWindows()
+    bottom_right = (location[0] + w, location[1] + h)    
+    cv2.rectangle(img2, location, bottom_right, 255, 5)
+    cv2.imshow('Match', img2)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()

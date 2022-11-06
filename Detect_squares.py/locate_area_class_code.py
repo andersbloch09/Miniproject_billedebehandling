@@ -5,24 +5,31 @@ import statistics as sta
 
 class image_handler():
     def __init__(self):
-        self.img = cv.imread(r"King Domino dataset/Cropped and perspective corrected boards/4.jpg",1)
+        self.img = cv.imread(r"King Domino dataset/Cropped and perspective corrected boards/3.jpg",1)
         self.board_size = 5
     
     def find_castle(self):#Function to find the castle and change the color values to 0 to locate it easier.
         self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
-        self.template_castle_n_h = cv.imread(r"Detect_squares.py/Assests/gray_castle_n_h.png",cv.COLOR_BGR2GRAY)#Castle with no house on.
-        self.methods = [cv.TM_CCOEFF, cv.TM_CCOEFF_NORMED, cv.TM_CCORR,
-            cv.TM_CCORR_NORMED, cv.TM_SQDIFF, cv.TM_SQDIFF_NORMED]
-        
-        for method in self.methods:
-            self.gray_copy = self.gray.copy()
-            result = cv.matchTemplate(self.gray_copy, self.template_castle_n_h, method)
-            min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
+        self.template_castle_n_h = cv.imread(r"Detect_squares.py/Assests/gray_castle_n_h.png", 0)#Castle with no house on.
+        self.resized_template_castle_n_h = cv.resize(self.template_castle_n_h, [100,100], interpolation = cv.INTER_AREA)
+        methods = [cv.TM_SQDIFF, cv.TM_SQDIFF_NORMED]
+        h, w = self.resized_template_castle_n_h.shape
+
+        for method in methods:
+            gray_copy = self.gray.copy()
+
+            res = cv.matchTemplate(gray_copy, self.resized_template_castle_n_h, method)
+            min_val, max_val, min_loc, max_loc = cv.minMaxLoc(res)
             print(min_loc,max_loc)
-            if method in [cv.TM_SQDIFF, cv.TM_SQDIFF_NORMED]:
-                pass
+            location = min_loc
             
-    
+
+            bottom_right = (location[0] + w, location[1] + h)
+
+            cv.rectangle(gray_copy, location, bottom_right, 0, 10)
+            cv.imshow("template matching", gray_copy) 
+            cv.waitKey()
+        
     def mean_cal(self):
         self.mean_array = np.zeros((5, 5, 3), dtype='uint8')
         for j in range(self.board_size):
@@ -43,7 +50,6 @@ class image_handler():
                 g_mean = sta.mean(g_mean)
                 r_mean = sta.mean(r_mean)
                 self.mean_array[i,j] = (b_mean, g_mean, r_mean)
-
 
     def find_landscape(self):
         corn = 1
@@ -112,8 +118,7 @@ class image_handler():
                 else:
                     self.landscape_map[i,j] = "not figured"
                     self.area_map[i,j] = not_figured
-        
-        
+
     def locate_connections(self):
         self.object_array = np.zeros((5, 5), dtype="uint8")
         self.input_crown = self.area_map[0,1] 
@@ -148,12 +153,12 @@ pic.find_castle()
 pic.find_landscape()
 pic.locate_connections()"""
 
-print(pic.object_array)
+"""print(pic.object_array)
 
 mean_resized = cv.resize(pic.mean_array, [500,500], interpolation = cv.INTER_AREA)
 
 cv.imshow("mean resized", mean_resized)
 cv.imshow("img",pic.img)
 cv.waitKey()
-cv.destroyAllWindows()
+cv.destroyAllWindows()"""
 
