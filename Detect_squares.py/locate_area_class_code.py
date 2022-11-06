@@ -8,27 +8,26 @@ class image_handler():
         self.img = cv.imread(r"King Domino dataset/Cropped and perspective corrected boards/3.jpg",1)
         self.board_size = 5
     
-    def find_castle(self):#Function to find the castle and change the color values to 0 to locate it easier.
+    def find_tower(self):#Function to find the tower and change the color values to 0 to locate it easier.
         self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
-        self.template_castle_n_h = cv.imread(r"Detect_squares.py/Assests/gray_castle_n_h.png", 0)#Castle with no house on.
-        self.resized_template_castle_n_h = cv.resize(self.template_castle_n_h, [100,100], interpolation = cv.INTER_AREA)
+        self.template_tower_n_h = cv.imread(r"Detect_squares.py\Assests\gray_castle_n_h.png", 0)#tower with no house on.
+        self.resized_template_tower_n_h = cv.resize(self.template_tower_n_h, [100,100], interpolation = cv.INTER_AREA)
         methods = [cv.TM_SQDIFF, cv.TM_SQDIFF_NORMED]
-        h, w = self.resized_template_castle_n_h.shape
+        h, w = self.resized_template_tower_n_h.shape
 
         for method in methods:
             gray_copy = self.gray.copy()
 
-            res = cv.matchTemplate(gray_copy, self.resized_template_castle_n_h, method)
+            res = cv.matchTemplate(gray_copy, self.resized_template_tower_n_h, method)
             min_val, max_val, min_loc, max_loc = cv.minMaxLoc(res)
             print(min_loc,max_loc)
             location = min_loc
-            
 
             bottom_right = (location[0] + w, location[1] + h)
-
-            cv.rectangle(gray_copy, location, bottom_right, 0, 10)
-            cv.imshow("template matching", gray_copy) 
-            cv.waitKey()
+            
+            self.img = cv.rectangle(self.img, location, bottom_right, 0, -1)
+             
+            
         
     def mean_cal(self):
         self.mean_array = np.zeros((5, 5, 3), dtype='uint8')
@@ -59,13 +58,14 @@ class image_handler():
         digging = 5
         swamp = 6
         not_figured = 7 
-        castle = 8
+        tower = 8
         th_corn = [(0,31),(110,178),(130,220)]
         th_ocean = [(90,210),(46,150),(0,70)]
         th_meadow = [(7,51),(80,160),(55,145)]
-        th_forrest = [(7,100),(34,80),(28,80)]
+        th_forrest = [(7,100),(34,80),(25,80)]
         th_mine = [(30,47),(53,76),(60,92)]
         th_swamp = [(41,95),(70,127),(84,133)]
+        th_tower = [(0,15),(0,15),(0,15)]
         self.landscape_map = np.zeros((5, 5),dtype="U")
         self.area_map = np.zeros((5, 5),dtype="uint8")
         for j in range(self.board_size):
@@ -73,6 +73,11 @@ class image_handler():
                 b,g,r = self.mean_array[i,j]
                 print(i,j)
                 print(self.mean_array[i,j])
+                if b >= th_tower[0][0] and b <= th_tower[0][1] and g >= th_tower[1][0] and g <= th_tower[1][1] and r >= th_tower[2][0] and r <= th_tower[2][1]:
+                    self.landscape_map[i,j] = "tower"
+                    self.area_map[i,j] = tower
+                else: 
+                    pass
                 if b >= th_corn[0][0] and b <= th_corn[0][1] and g >= th_corn[1][0] and g <= th_corn[1][1] and r >= th_corn[2][0] and r <= th_corn[2][1]:
                     if r - g > 30: 
                         self.landscape_map[i,j] = "not figured"
@@ -148,17 +153,18 @@ class image_handler():
 
 
 pic = image_handler()
-pic.find_castle()
-"""pic.mean_cal()
+pic.find_tower()
+pic.mean_cal()
 pic.find_landscape()
-pic.locate_connections()"""
+pic.locate_connections()
 
-"""print(pic.object_array)
+print(pic.object_array)
+print(pic.landscape_map)
 
 mean_resized = cv.resize(pic.mean_array, [500,500], interpolation = cv.INTER_AREA)
 
 cv.imshow("mean resized", mean_resized)
 cv.imshow("img",pic.img)
 cv.waitKey()
-cv.destroyAllWindows()"""
+cv.destroyAllWindows()
 
