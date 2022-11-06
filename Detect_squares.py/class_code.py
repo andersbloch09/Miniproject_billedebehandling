@@ -9,6 +9,10 @@ class image_handler():
         self.img = cv.imread(r"King Domino dataset/Cropped and perspective corrected boards/4.jpg",1)
         self.board_size = 5
     
+    def find_castle(self):
+        self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
+        
+    
     def mean_cal(self):
         self.mean_array = np.zeros((5, 5, 3), dtype='uint8')
         for j in range(self.board_size):
