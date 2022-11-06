@@ -20,7 +20,7 @@ class image_handler():
             min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
             print(min_loc,max_loc)
             if method in [cv.TM_SQDIFF, cv.TM_SQDIFF_NORMED]:
-                
+                pass
             
     
     def mean_cal(self):
