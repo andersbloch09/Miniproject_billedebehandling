@@ -6,7 +6,7 @@ import math
 
 class image_handler():
     def __init__(self):
-        self.img = cv.imread(r"King Domino dataset/Cropped and perspective corrected boards/51.jpg",1)
+        self.img = cv.imread(r"King Domino dataset/Cropped and perspective corrected boards/50.jpg",1)
         self.board_size = 5
     
     def find_tower(self):#Function to find the tower and change the color values to 0 to locate it easier.
@@ -112,11 +112,11 @@ class image_handler():
         tower = 8
         th_corn = [(0,31),(110,178),(130,220)]
         th_ocean = [(90,210),(46,150),(0,70)]
-        th_meadow = [(7,51),(80,160),(55,145)]
+        th_meadow = [(7,51),(60,160),(51,145)]
         th_forrest = [(7,100),(34,80),(25,80)]
         th_mine = [(30,47),(53,76),(60,92)]
-        th_swamp = [(41,95),(70,127),(84,133)]
-        th_tower = [(0,15),(0,15),(0,15)]
+        th_swamp = [(41,100),(70,127),(84,133)]
+        th_tower = [(0,20),(0,20),(0,20)]
         self.landscape_map = np.zeros((5, 5), dtype="U")
         self.area_map = np.zeros((5, 5),dtype="uint8")
         for j in range(self.board_size):
@@ -138,10 +138,16 @@ class image_handler():
                     self.landscape_map[i,j] = "ocean"
                     self.area_map[i,j] = ocean
                 elif b >= th_meadow[0][0] and b <= th_meadow[0][1] and g >= th_meadow[1][0] and g <= th_meadow[1][1] and r >= th_meadow[2][0] and r <= th_meadow[2][1]:
-                    if g < r: 
+                    if abs(g-r) <= 20 and b <= 40 and g < 100: 
+                        self.landscape_map[i,j] = "forrest"
+                        self.area_map[i,j] = forrest
+                    elif g < r: 
                         if r - g > 30: 
                             self.landscape_map[i,j] = "not figured"
                             self.area_map[i,j] = not_figured
+                        elif b >= th_mine[0][0] and b <= th_mine[0][1] and g >= th_mine[1][0] and g <= th_mine[1][1] and r >= th_mine[2][0] and r <= th_mine[2][1]:
+                            self.landscape_map[i,j] = "digging"
+                            self.area_map[i,j] = digging
                         else:
                             self.landscape_map[i,j] = "swamp"
                             self.area_map[i,j] = swamp
@@ -160,7 +166,7 @@ class image_handler():
                         self.landscape_map[i,j] = "digging"
                         self.area_map[i,j] = digging
                 elif b >= th_forrest[0][0] and b <= th_forrest[0][1] and g >= th_forrest[1][0] and g <= th_forrest[1][1] and r >= th_forrest[2][0] and r <= th_forrest[2][1]:
-                    if r > 5+g: 
+                    if r > 3+g: 
                         self.landscape_map[i,j] = "digging"
                         self.area_map[i,j] = digging
                     else:
@@ -198,20 +204,25 @@ class image_handler():
                         self.object_array[i,j] = a 
                 else: 
                     pass
+        
 
-pic = image_handler()
-pic.find_tower()
-pic.mean_cal()
-pic.find_landscape()
-pic.locate_connections()
+image_test = image_handler()
+image_test.find_tower()
+image_test.mean_cal()
+image_test.find_landscape()
+image_test.locate_connections()
 
-print(pic.object_array)
-print(pic.landscape_map)
-print(pic.max_val)
+image = image_handler()
 
-mean_resized = cv.resize(pic.mean_array, [500,500], interpolation = cv.INTER_AREA)
+
+print(image_test.object_array)
+print(image_test.landscape_map)
+print(image_test.max_val)
+
+mean_resized = cv.resize(image_test.mean_array, [500,500], interpolation = cv.INTER_AREA)
 
 cv.imshow("mean resized", mean_resized)
-cv.imshow("img",pic.img)
+cv.imshow("img",image_test.img)
+cv.imshow("img no change", image.img)
 cv.waitKey()
 cv.destroyAllWindows()
