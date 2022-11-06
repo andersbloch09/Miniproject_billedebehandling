@@ -8,10 +8,20 @@ class image_handler():
         self.img = cv.imread(r"King Domino dataset/Cropped and perspective corrected boards/4.jpg",1)
         self.board_size = 5
     
-    def find_castle(self):
+    def find_castle(self):#Function to find the castle and change the color values to 0 to locate it easier.
         self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
-        cv.imshow("gray scale", self.gray)
+        self.template_castle_n_h = cv.imread(r"Detect_squares.py/Assests/gray_castle_n_h.png",cv.COLOR_BGR2GRAY)#Castle with no house on.
+        self.methods = [cv.TM_CCOEFF, cv.TM_CCOEFF_NORMED, cv.TM_CCORR,
+            cv.TM_CCORR_NORMED, cv.TM_SQDIFF, cv.TM_SQDIFF_NORMED]
         
+        for method in self.methods:
+            self.gray_copy = self.gray.copy()
+            result = cv.matchTemplate(self.gray_copy, self.template_castle_n_h, method)
+            min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
+            print(min_loc,max_loc)
+            if method in [cv.TM_SQDIFF, cv.TM_SQDIFF_NORMED]:
+                
+            
     
     def mean_cal(self):
         self.mean_array = np.zeros((5, 5, 3), dtype='uint8')
@@ -134,9 +144,9 @@ class image_handler():
 
 pic = image_handler()
 pic.find_castle()
-pic.mean_cal()
+"""pic.mean_cal()
 pic.find_landscape()
-pic.locate_connections()
+pic.locate_connections()"""
 
 print(pic.object_array)
 
