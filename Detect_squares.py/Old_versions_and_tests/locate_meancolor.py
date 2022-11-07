@@ -2,7 +2,7 @@ import numpy as np
 import cv2 as cv
 import statistics as sta
 
-img = cv.imread(r"King Domino dataset/Cropped and perspective corrected boards/19.jpg",1)
+img = cv.imread(r"King Domino dataset/Cropped and perspective corrected boards/4.jpg",1)
 board_size = 5
 
 def mean_cal():
@@ -56,7 +56,38 @@ def find_landscape():
                 landscape_map[i,j] = "swamp"
             else:
                 landscape_map[i,j] = "not figured"
-    print(landscape_map)
+                area_map[i,j] = not_figured
+    return(area_map, landscape_map)
+
+area_layout, landscape_map = find_landscape()
+print(landscape_map)
+print(area_layout)
+
+def locate_connections():
+    object_array = np.zeros((5, 5), dtype="uint8")
+    input_crown = area_layout[0,0] 
+    print("input_crown = ", input_crown)
+    a = 0
+    for i in range(board_size):
+        for j in range(board_size):
+            print(a)
+            print("input_crown = ", input_crown)
+            if area_layout[i,j] == input_crown:
+                object_array[i,j] = a 
+                if object_array[i-1,j] or object_array[i,j-1] == True:
+                    if object_array[i-1,j] == True:
+                        object_array[i,j] = object_array[i-1,j]
+                    elif object_array[i,j-1] == True:
+                        object_array[i,j] = object_array[i,j-1]
+                else:
+                    a += 1
+                    object_array[i,j] = a 
+            else: 
+                pass
+
+
+    print(object_array)          
+
 
 print(mean_board)
 find_landscape()
