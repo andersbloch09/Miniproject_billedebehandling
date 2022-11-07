@@ -5,18 +5,82 @@ import math
 
 class image_handler():
     def __init__(self):
-        self.img = cv.imread(r"King Domino dataset/Cropped and perspective corrected boards/12.jpg",1)
+        self.img = cv.imread(r"King Domino dataset/Cropped and perspective corrected boards/4.jpg",1)
         self.board_size = 5
         self.point_counter = 0
+        self.crowns_made = [(-500,-500)]
 
+    def find_crown_location(self, location):
+        input_crown_location = 0
+        print("crowns made",self.crowns_made)
+        for crown in self.crowns_made:
+            if location[0] < crown[0]-15 or location[0] > crown[0] + 15 and location[1] < crown[1]-15 or location[1] > crown[1]+15:
+                print("crown0,crown1",crown[0],crown[1], "location0 og 1", location[0],location[1])
+                if location[0] > 0 and location[0] < 100 and location[1] > 0 and location[1] < 100:
+                    input_crown_location = [0,0]
+                elif location[0] > 100 and location[0] < 200 and location[1] > 0 and location[1] < 100:
+                    input_crown_location = [0,1]
+                elif location[0] > 200 and location[0] < 300 and location[1] > 0 and location[1] < 100:
+                    input_crown_location = [0,2]
+                elif location[0] > 300 and location[0] < 400 and location[1] > 0 and location[1] < 100:
+                    input_crown_location = [0,3]
+                elif location[0] > 400 and location[0] < 500 and location[1] > 0 and location[1] < 100:
+                    input_crown_location = [0,4]
+                
+                elif location[0] > 0 and location[0] < 100 and location[1] > 100 and location[1] < 200:
+                    input_crown_location = [1,0]
+                elif location[0] > 100 and location[0] < 200 and location[1] > 100 and location[1] < 200:
+                    input_crown_location = [1,1]
+                elif location[0] > 200 and location[0] < 300 and location[1] > 100 and location[1] < 200:
+                    input_crown_location = [1,2]
+                elif location[0] > 300 and location[0] < 400 and location[1] > 100 and location[1] < 200:
+                    input_crown_location = [1,3]
+                elif location[0] > 400 and location[0] < 500 and location[1] > 100 and location[1] < 200:
+                    input_crown_location = [1,4]
+
+                elif location[0] > 0 and location[0] < 100 and location[1] > 200 and location[1] < 300:
+                    input_crown_location = [2,0]
+                elif location[0] > 100 and location[0] < 200 and location[1] > 200 and location[1] < 300:
+                    input_crown_location = [2,1]
+                elif location[0] > 200 and location[0] < 300 and location[1] > 200 and location[1] < 300:
+                    input_crown_location = [2,2]
+                elif location[0] > 300 and location[0] < 400 and location[1] > 200 and location[1] < 300:
+                    input_crown_location = [2,3]
+                elif location[0] > 400 and location[0] < 500 and location[1] > 200 and location[1] < 300:
+                    input_crown_location = [2,4]
+
+                elif location[0] > 0 and location[0] < 100 and location[1] > 300 and location[1] < 400:
+                    input_crown_location = [3,0]
+                elif location[0] > 100 and location[0] < 200 and location[1] > 300 and location[1] < 400:
+                    input_crown_location = [3,1]
+                elif location[0] > 200 and location[0] < 300 and location[1] > 300 and location[1] < 400:
+                    input_crown_location = [3,2]
+                elif location[0] > 300 and location[0] < 400 and location[1] > 300 and location[1] < 400:
+                    input_crown_location = [3,3]
+                elif location[0] > 400 and location[0] < 500 and location[1] > 300 and location[1] < 400:
+                    input_crown_location = [3,4]
+                
+                elif location[0] > 0 and location[0] < 100 and location[1] > 400 and location[1] < 500:
+                    input_crown_location = [4,0]
+                elif location[0] > 100 and location[0] < 200 and location[1] > 400 and location[1] < 500:
+                    input_crown_location = [4,1]
+                elif location[0] > 200 and location[0] < 300 and location[1] > 400 and location[1] < 500:
+                    input_crown_location = [4,2]
+                elif location[0] > 300 and location[0] < 400 and location[1] > 400 and location[1] < 500:
+                    input_crown_location = [4,3]
+                elif location[0] > 400 and location[0] < 500 and location[1] > 400 and location[1] < 500:
+                    input_crown_location = [4,4]
+                    
+        return(input_crown_location)
+    
+    
     def find_crown_meadow(self):
          #This is for the crown_meadow in all rotations
         self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
-        self.crown_meadow = cv.imread(r"Detect_squares.py/Assests/crown_meadow.png", 0)
-
+        self.crown_meadow = cv.imread(r"Detect_squares.py/Assests/crown_meadow.jpg", 0)
+        
         methods =  [cv.TM_CCOEFF, cv.TM_CCOEFF_NORMED, cv.TM_CCORR,
             cv.TM_CCORR_NORMED, cv.TM_SQDIFF]
-
         h, w = self.crown_meadow.shape
         for i in range(4):
             for method in methods:
@@ -29,70 +93,13 @@ class image_handler():
                     location = min_loc
                 else: 
                     location = max_loc
-                if math.isclose(self.max_val, 1, abs_tol=0.0125) == True:
-                    print(method)
+                if math.isclose(self.max_val, 1, abs_tol=0.01) == True:
                     bottom_right = (location[0] + w, location[1] + h)
                     self.img = cv.rectangle(self.img, location, bottom_right, 0, -1)
-
-                    if location[0] > 0 and location[0] < 100 and location[1] > 0 and location[1] < 100:
-                        input_crown_location = self.area_map[0,0]
-                    elif location[0] > 100 and location[0] < 200 and location[1] > 0 and location[1] < 100:
-                        input_crown_location = self.area_map[1,0]
-                    elif location[0] > 200 and location[0] < 300 and location[1] > 0 and location[1] < 100:
-                        input_crown_location = self.area_map[2,0]
-                    elif location[0] > 300 and location[0] < 400 and location[1] > 0 and location[1] < 100:
-                        input_crown_location = self.area_map[3,0]
-                    elif location[0] > 400 and location[0] < 500 and location[1] > 0 and location[1] < 100:
-                        input_crown_location = self.area_map[4,0]
-                    
-                    elif location[0] > 0 and location[0] < 100 and location[1] > 100 and location[1] < 200:
-                        input_crown_location = self.area_map[0,1]
-                    elif location[0] > 100 and location[0] < 200 and location[1] > 100 and location[1] < 200:
-                        input_crown_location = self.area_map[1,1]
-                    elif location[0] > 200 and location[0] < 300 and location[1] > 100 and location[1] < 200:
-                        input_crown_location = self.area_map[2,1]
-                    elif location[0] > 300 and location[0] < 400 and location[1] > 100 and location[1] < 200:
-                        input_crown_location = self.area_map[3,1]
-                    elif location[0] > 400 and location[0] < 500 and location[1] > 100 and location[1] < 200:
-                        input_crown_location = self.area_map[4,1]
-
-                    elif location[0] > 0 and location[0] < 100 and location[1] > 200 and location[1] < 300:
-                        input_crown_location = self.area_map[0,2]
-                    elif location[0] > 100 and location[0] < 200 and location[1] > 200 and location[1] < 300:
-                        input_crown_location = self.area_map[1,2]
-                    elif location[0] > 200 and location[0] < 300 and location[1] > 200 and location[1] < 300:
-                        input_crown_location = self.area_map[2,2]
-                    elif location[0] > 300 and location[0] < 400 and location[1] > 200 and location[1] < 300:
-                        input_crown_location = self.area_map[3,2]
-                    elif location[0] > 400 and location[0] < 500 and location[1] > 200 and location[1] < 300:
-                        input_crown_location = self.area_map[4,2]
-
-                    elif location[0] > 0 and location[0] < 100 and location[1] > 300 and location[1] < 400:
-                        input_crown_location = self.area_map[0,3]
-                    elif location[0] > 100 and location[0] < 200 and location[1] > 300 and location[1] < 400:
-                        input_crown_location = self.area_map[1,3]
-                    elif location[0] > 200 and location[0] < 300 and location[1] > 300 and location[1] < 400:
-                        input_crown_location = self.area_map[2,3]
-                    elif location[0] > 300 and location[0] < 400 and location[1] > 300 and location[1] < 400:
-                        input_crown_location = self.area_map[3,3]
-                    elif location[0] > 400 and location[0] < 500 and location[1] > 300 and location[1] < 400:
-                        input_crown_location = self.area_map[4,3]
-                    
-                    elif location[0] > 0 and location[0] < 100 and location[1] > 400 and location[1] < 500:
-                        input_crown_location = self.area_map[0,4]
-                    elif location[0] > 100 and location[0] < 200 and location[1] > 400 and location[1] < 500:
-                        input_crown_location = self.area_map[1,4]
-                    elif location[0] > 200 and location[0] < 300 and location[1] > 400 and location[1] < 500:
-                        input_crown_location = self.area_map[2,4]
-                    elif location[0] > 300 and location[0] < 400 and location[1] > 400 and location[1] < 500:
-                        input_crown_location = self.area_map[3,4]
-                    elif location[0] > 400 and location[0] < 500 and location[1] > 400 and location[1] < 500:
-                        input_crown_location = self.area_map[4,4]
-                    area = 3
-                    self.locate_connections(input_crown_location, area)
-
-                else: 
-                    pass
+                    self.crowns_made.append(location)
+                    input_crown_location = self.find_crown_location(location)
+                    self.locate_connections(input_crown_location)
+                
 
     def find_crown_swamp(self):
         #This is for the crown_swamp in all rotations
@@ -101,7 +108,6 @@ class image_handler():
 
         methods =  [cv.TM_CCOEFF, cv.TM_CCOEFF_NORMED, cv.TM_CCORR,
             cv.TM_CCORR_NORMED, cv.TM_SQDIFF]
-
         h, w = self.crown_swamp.shape
         for i in range(4):
             for method in methods:
@@ -114,79 +120,22 @@ class image_handler():
                     location = min_loc
                 else: 
                     location = max_loc
-                if math.isclose(self.max_val, 1, abs_tol=0.01) == True:
-                    print(method)
+                if math.isclose(self.max_val, 1, abs_tol=0.015) == True:
                     bottom_right = (location[0] + w, location[1] + h)
                     self.img = cv.rectangle(self.img, location, bottom_right, 0, -1)
+                    self.crowns_made.append(location)
+                    input_crown_location = self.find_crown_location(location)
+                    self.locate_connections(input_crown_location)
 
-                    if location[0] > 0 and location[0] < 100 and location[1] > 0 and location[1] < 100:
-                        input_crown_location = self.area_map[0,0]
-                    elif location[0] > 100 and location[0] < 200 and location[1] > 0 and location[1] < 100:
-                        input_crown_location = self.area_map[1,0]
-                    elif location[0] > 200 and location[0] < 300 and location[1] > 0 and location[1] < 100:
-                        input_crown_location = self.area_map[2,0]
-                    elif location[0] > 300 and location[0] < 400 and location[1] > 0 and location[1] < 100:
-                        input_crown_location = self.area_map[3,0]
-                    elif location[0] > 400 and location[0] < 500 and location[1] > 0 and location[1] < 100:
-                        input_crown_location = self.area_map[4,0]
-                    
-                    elif location[0] > 0 and location[0] < 100 and location[1] > 100 and location[1] < 200:
-                        input_crown_location = self.area_map[0,1]
-                    elif location[0] > 100 and location[0] < 200 and location[1] > 100 and location[1] < 200:
-                        input_crown_location = self.area_map[1,1]
-                    elif location[0] > 200 and location[0] < 300 and location[1] > 100 and location[1] < 200:
-                        input_crown_location = self.area_map[2,1]
-                    elif location[0] > 300 and location[0] < 400 and location[1] > 100 and location[1] < 200:
-                        input_crown_location = self.area_map[3,1]
-                    elif location[0] > 400 and location[0] < 500 and location[1] > 100 and location[1] < 200:
-                        input_crown_location = self.area_map[4,1]
-
-                    elif location[0] > 0 and location[0] < 100 and location[1] > 200 and location[1] < 300:
-                        input_crown_location = self.area_map[0,2]
-                    elif location[0] > 100 and location[0] < 200 and location[1] > 200 and location[1] < 300:
-                        input_crown_location = self.area_map[1,2]
-                    elif location[0] > 200 and location[0] < 300 and location[1] > 200 and location[1] < 300:
-                        input_crown_location = self.area_map[2,2]
-                    elif location[0] > 300 and location[0] < 400 and location[1] > 200 and location[1] < 300:
-                        input_crown_location = self.area_map[3,2]
-                    elif location[0] > 400 and location[0] < 500 and location[1] > 200 and location[1] < 300:
-                        input_crown_location = self.area_map[4,2]
-
-                    elif location[0] > 0 and location[0] < 100 and location[1] > 300 and location[1] < 400:
-                        input_crown_location = self.area_map[0,3]
-                    elif location[0] > 100 and location[0] < 200 and location[1] > 300 and location[1] < 400:
-                        input_crown_location = self.area_map[1,3]
-                    elif location[0] > 200 and location[0] < 300 and location[1] > 300 and location[1] < 400:
-                        input_crown_location = self.area_map[2,3]
-                    elif location[0] > 300 and location[0] < 400 and location[1] > 300 and location[1] < 400:
-                        input_crown_location = self.area_map[3,3]
-                    elif location[0] > 400 and location[0] < 500 and location[1] > 300 and location[1] < 400:
-                        input_crown_location = self.area_map[4,3]
-                    
-                    elif location[0] > 0 and location[0] < 100 and location[1] > 400 and location[1] < 500:
-                        input_crown_location = self.area_map[0,4]
-                    elif location[0] > 100 and location[0] < 200 and location[1] > 400 and location[1] < 500:
-                        input_crown_location = self.area_map[1,4]
-                    elif location[0] > 200 and location[0] < 300 and location[1] > 400 and location[1] < 500:
-                        input_crown_location = self.area_map[2,4]
-                    elif location[0] > 300 and location[0] < 400 and location[1] > 400 and location[1] < 500:
-                        input_crown_location = self.area_map[3,4]
-                    elif location[0] > 400 and location[0] < 500 and location[1] > 400 and location[1] < 500:
-                        input_crown_location = self.area_map[4,4]
-                    area = 6
-                    self.locate_connections(input_crown_location, area)
-
-                else: 
-                    pass
+              
         
     def find_crown_forrest(self):
         #This is for the crown_forrest in all rotations
         self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
-        self.crown_forrest = cv.imread(r"Detect_squares.py/Assests/crown_forrest.png", 0)
+        self.crown_forrest = cv.imread(r"Detect_squares.py/Assests/crown_mine.png", 0)
 
         methods =  [cv.TM_CCOEFF, cv.TM_CCOEFF_NORMED, cv.TM_CCORR,
             cv.TM_CCORR_NORMED, cv.TM_SQDIFF]
-
         h, w = self.crown_forrest.shape
         for i in range(4):
             for method in methods:
@@ -199,70 +148,15 @@ class image_handler():
                     location = min_loc
                 else: 
                     location = max_loc
-                if math.isclose(self.max_val, 1, abs_tol=0.01) == True:
-                    print(method)
+                if math.isclose(self.max_val, 1, abs_tol=0.02) == True:
                     bottom_right = (location[0] + w, location[1] + h)
                     self.img = cv.rectangle(self.img, location, bottom_right, 0, -1)
-
-                    if location[0] > 0 and location[0] < 100 and location[1] > 0 and location[1] < 100:
-                        input_crown_location = self.area_map[0,0]
-                    elif location[0] > 100 and location[0] < 200 and location[1] > 0 and location[1] < 100:
-                        input_crown_location = self.area_map[1,0]
-                    elif location[0] > 200 and location[0] < 300 and location[1] > 0 and location[1] < 100:
-                        input_crown_location = self.area_map[2,0]
-                    elif location[0] > 300 and location[0] < 400 and location[1] > 0 and location[1] < 100:
-                        input_crown_location = self.area_map[3,0]
-                    elif location[0] > 400 and location[0] < 500 and location[1] > 0 and location[1] < 100:
-                        input_crown_location = self.area_map[4,0]
+                    self.crowns_made.append(location)
+                    input_crown_location = self.find_crown_location(location)
+                    self.locate_connections(input_crown_location)
                     
-                    elif location[0] > 0 and location[0] < 100 and location[1] > 100 and location[1] < 200:
-                        input_crown_location = self.area_map[0,1]
-                    elif location[0] > 100 and location[0] < 200 and location[1] > 100 and location[1] < 200:
-                        input_crown_location = self.area_map[1,1]
-                    elif location[0] > 200 and location[0] < 300 and location[1] > 100 and location[1] < 200:
-                        input_crown_location = self.area_map[2,1]
-                    elif location[0] > 300 and location[0] < 400 and location[1] > 100 and location[1] < 200:
-                        input_crown_location = self.area_map[3,1]
-                    elif location[0] > 400 and location[0] < 500 and location[1] > 100 and location[1] < 200:
-                        input_crown_location = self.area_map[4,1]
 
-                    elif location[0] > 0 and location[0] < 100 and location[1] > 200 and location[1] < 300:
-                        input_crown_location = self.area_map[0,2]
-                    elif location[0] > 100 and location[0] < 200 and location[1] > 200 and location[1] < 300:
-                        input_crown_location = self.area_map[1,2]
-                    elif location[0] > 200 and location[0] < 300 and location[1] > 200 and location[1] < 300:
-                        input_crown_location = self.area_map[2,2]
-                    elif location[0] > 300 and location[0] < 400 and location[1] > 200 and location[1] < 300:
-                        input_crown_location = self.area_map[3,2]
-                    elif location[0] > 400 and location[0] < 500 and location[1] > 200 and location[1] < 300:
-                        input_crown_location = self.area_map[4,2]
-
-                    elif location[0] > 0 and location[0] < 100 and location[1] > 300 and location[1] < 400:
-                        input_crown_location = self.area_map[0,3]
-                    elif location[0] > 100 and location[0] < 200 and location[1] > 300 and location[1] < 400:
-                        input_crown_location = self.area_map[1,3]
-                    elif location[0] > 200 and location[0] < 300 and location[1] > 300 and location[1] < 400:
-                        input_crown_location = self.area_map[2,3]
-                    elif location[0] > 300 and location[0] < 400 and location[1] > 300 and location[1] < 400:
-                        input_crown_location = self.area_map[3,3]
-                    elif location[0] > 400 and location[0] < 500 and location[1] > 300 and location[1] < 400:
-                        input_crown_location = self.area_map[4,3]
-                    
-                    elif location[0] > 0 and location[0] < 100 and location[1] > 400 and location[1] < 500:
-                        input_crown_location = self.area_map[0,4]
-                    elif location[0] > 100 and location[0] < 200 and location[1] > 400 and location[1] < 500:
-                        input_crown_location = self.area_map[1,4]
-                    elif location[0] > 200 and location[0] < 300 and location[1] > 400 and location[1] < 500:
-                        input_crown_location = self.area_map[2,4]
-                    elif location[0] > 300 and location[0] < 400 and location[1] > 400 and location[1] < 500:
-                        input_crown_location = self.area_map[3,4]
-                    elif location[0] > 400 and location[0] < 500 and location[1] > 400 and location[1] < 500:
-                        input_crown_location = self.area_map[4,4]
-                    area = 4
-                    self.locate_connections(input_crown_location, area)
-
-                else: 
-                    pass
+        
 
     def find_crown_mine(self):
         #This is for the crown_mine in all rotations
@@ -271,7 +165,6 @@ class image_handler():
 
         methods =  [cv.TM_CCOEFF, cv.TM_CCOEFF_NORMED, cv.TM_CCORR,
             cv.TM_CCORR_NORMED, cv.TM_SQDIFF]
-
         h, w = self.crown_mine.shape
         for i in range(4):
             for method in methods:
@@ -284,70 +177,14 @@ class image_handler():
                     location = min_loc
                 else: 
                     location = max_loc
-                if math.isclose(self.max_val, 1, abs_tol=0.01) == True:
-                    print(method)
+                if math.isclose(self.max_val, 1, abs_tol=0.03) == True:
                     bottom_right = (location[0] + w, location[1] + h)
                     self.img = cv.rectangle(self.img, location, bottom_right, 0, -1)
+                    self.crowns_made.append(location)
+                    input_crown_location = self.find_crown_location(location)
+                    self.locate_connections(input_crown_location)
 
-                    if location[0] > 0 and location[0] < 100 and location[1] > 0 and location[1] < 100:
-                        input_crown_location = self.area_map[0,0]
-                    elif location[0] > 100 and location[0] < 200 and location[1] > 0 and location[1] < 100:
-                        input_crown_location = self.area_map[1,0]
-                    elif location[0] > 200 and location[0] < 300 and location[1] > 0 and location[1] < 100:
-                        input_crown_location = self.area_map[2,0]
-                    elif location[0] > 300 and location[0] < 400 and location[1] > 0 and location[1] < 100:
-                        input_crown_location = self.area_map[3,0]
-                    elif location[0] > 400 and location[0] < 500 and location[1] > 0 and location[1] < 100:
-                        input_crown_location = self.area_map[4,0]
-                    
-                    elif location[0] > 0 and location[0] < 100 and location[1] > 100 and location[1] < 200:
-                        input_crown_location = self.area_map[0,1]
-                    elif location[0] > 100 and location[0] < 200 and location[1] > 100 and location[1] < 200:
-                        input_crown_location = self.area_map[1,1]
-                    elif location[0] > 200 and location[0] < 300 and location[1] > 100 and location[1] < 200:
-                        input_crown_location = self.area_map[2,1]
-                    elif location[0] > 300 and location[0] < 400 and location[1] > 100 and location[1] < 200:
-                        input_crown_location = self.area_map[3,1]
-                    elif location[0] > 400 and location[0] < 500 and location[1] > 100 and location[1] < 200:
-                        input_crown_location = self.area_map[4,1]
-
-                    elif location[0] > 0 and location[0] < 100 and location[1] > 200 and location[1] < 300:
-                        input_crown_location = self.area_map[0,2]
-                    elif location[0] > 100 and location[0] < 200 and location[1] > 200 and location[1] < 300:
-                        input_crown_location = self.area_map[1,2]
-                    elif location[0] > 200 and location[0] < 300 and location[1] > 200 and location[1] < 300:
-                        input_crown_location = self.area_map[2,2]
-                    elif location[0] > 300 and location[0] < 400 and location[1] > 200 and location[1] < 300:
-                        input_crown_location = self.area_map[3,2]
-                    elif location[0] > 400 and location[0] < 500 and location[1] > 200 and location[1] < 300:
-                        input_crown_location = self.area_map[4,2]
-
-                    elif location[0] > 0 and location[0] < 100 and location[1] > 300 and location[1] < 400:
-                        input_crown_location = self.area_map[0,3]
-                    elif location[0] > 100 and location[0] < 200 and location[1] > 300 and location[1] < 400:
-                        input_crown_location = self.area_map[1,3]
-                    elif location[0] > 200 and location[0] < 300 and location[1] > 300 and location[1] < 400:
-                        input_crown_location = self.area_map[2,3]
-                    elif location[0] > 300 and location[0] < 400 and location[1] > 300 and location[1] < 400:
-                        input_crown_location = self.area_map[3,3]
-                    elif location[0] > 400 and location[0] < 500 and location[1] > 300 and location[1] < 400:
-                        input_crown_location = self.area_map[4,3]
-                    
-                    elif location[0] > 0 and location[0] < 100 and location[1] > 400 and location[1] < 500:
-                        input_crown_location = self.area_map[0,4]
-                    elif location[0] > 100 and location[0] < 200 and location[1] > 400 and location[1] < 500:
-                        input_crown_location = self.area_map[1,4]
-                    elif location[0] > 200 and location[0] < 300 and location[1] > 400 and location[1] < 500:
-                        input_crown_location = self.area_map[2,4]
-                    elif location[0] > 300 and location[0] < 400 and location[1] > 400 and location[1] < 500:
-                        input_crown_location = self.area_map[3,4]
-                    elif location[0] > 400 and location[0] < 500 and location[1] > 400 and location[1] < 500:
-                        input_crown_location = self.area_map[4,4]
-                    area = 5
-                    self.locate_connections(input_crown_location, area)
-
-                else: 
-                    pass
+               
 
     def find_crown_corn(self):
         #This is for the crown_corn in all rotations
@@ -356,7 +193,6 @@ class image_handler():
 
         methods =  [cv.TM_CCOEFF, cv.TM_CCOEFF_NORMED, cv.TM_CCORR,
             cv.TM_CCORR_NORMED, cv.TM_SQDIFF]
-
         h, w = self.crown_corn.shape
         for i in range(4):
             for method in methods:
@@ -369,70 +205,14 @@ class image_handler():
                     location = min_loc
                 else: 
                     location = max_loc
-                if math.isclose(self.max_val, 1, abs_tol=0.001) == True:
-                    print(method)
+                if math.isclose(self.max_val, 1, abs_tol=0.002) == True:
                     bottom_right = (location[0] + w, location[1] + h)
                     self.img = cv.rectangle(self.img, location, bottom_right, 0, -1)
-
-                    if location[0] > 0 and location[0] < 100 and location[1] > 0 and location[1] < 100:
-                        input_crown_location = self.area_map[0,0]
-                    elif location[0] > 100 and location[0] < 200 and location[1] > 0 and location[1] < 100:
-                        input_crown_location = self.area_map[1,0]
-                    elif location[0] > 200 and location[0] < 300 and location[1] > 0 and location[1] < 100:
-                        input_crown_location = self.area_map[2,0]
-                    elif location[0] > 300 and location[0] < 400 and location[1] > 0 and location[1] < 100:
-                        input_crown_location = self.area_map[3,0]
-                    elif location[0] > 400 and location[0] < 500 and location[1] > 0 and location[1] < 100:
-                        input_crown_location = self.area_map[4,0]
-                    
-                    elif location[0] > 0 and location[0] < 100 and location[1] > 100 and location[1] < 200:
-                        input_crown_location = self.area_map[0,1]
-                    elif location[0] > 100 and location[0] < 200 and location[1] > 100 and location[1] < 200:
-                        input_crown_location = self.area_map[1,1]
-                    elif location[0] > 200 and location[0] < 300 and location[1] > 100 and location[1] < 200:
-                        input_crown_location = self.area_map[2,1]
-                    elif location[0] > 300 and location[0] < 400 and location[1] > 100 and location[1] < 200:
-                        input_crown_location = self.area_map[3,1]
-                    elif location[0] > 400 and location[0] < 500 and location[1] > 100 and location[1] < 200:
-                        input_crown_location = self.area_map[4,1]
-
-                    elif location[0] > 0 and location[0] < 100 and location[1] > 200 and location[1] < 300:
-                        input_crown_location = self.area_map[0,2]
-                    elif location[0] > 100 and location[0] < 200 and location[1] > 200 and location[1] < 300:
-                        input_crown_location = self.area_map[1,2]
-                    elif location[0] > 200 and location[0] < 300 and location[1] > 200 and location[1] < 300:
-                        input_crown_location = self.area_map[2,2]
-                    elif location[0] > 300 and location[0] < 400 and location[1] > 200 and location[1] < 300:
-                        input_crown_location = self.area_map[3,2]
-                    elif location[0] > 400 and location[0] < 500 and location[1] > 200 and location[1] < 300:
-                        input_crown_location = self.area_map[4,2]
-
-                    elif location[0] > 0 and location[0] < 100 and location[1] > 300 and location[1] < 400:
-                        input_crown_location = self.area_map[0,3]
-                    elif location[0] > 100 and location[0] < 200 and location[1] > 300 and location[1] < 400:
-                        input_crown_location = self.area_map[1,3]
-                    elif location[0] > 200 and location[0] < 300 and location[1] > 300 and location[1] < 400:
-                        input_crown_location = self.area_map[2,3]
-                    elif location[0] > 300 and location[0] < 400 and location[1] > 300 and location[1] < 400:
-                        input_crown_location = self.area_map[3,3]
-                    elif location[0] > 400 and location[0] < 500 and location[1] > 300 and location[1] < 400:
-                        input_crown_location = self.area_map[4,3]
-                    
-                    elif location[0] > 0 and location[0] < 100 and location[1] > 400 and location[1] < 500:
-                        input_crown_location = self.area_map[0,4]
-                    elif location[0] > 100 and location[0] < 200 and location[1] > 400 and location[1] < 500:
-                        input_crown_location = self.area_map[1,4]
-                    elif location[0] > 200 and location[0] < 300 and location[1] > 400 and location[1] < 500:
-                        input_crown_location = self.area_map[2,4]
-                    elif location[0] > 300 and location[0] < 400 and location[1] > 400 and location[1] < 500:
-                        input_crown_location = self.area_map[3,4]
-                    elif location[0] > 400 and location[0] < 500 and location[1] > 400 and location[1] < 500:
-                        input_crown_location = self.area_map[4,4]
-                    area = 1
-                    self.locate_connections(input_crown_location, area)
-
-                else: 
-                    pass
+                    self.crowns_made.append(location)
+                    input_crown_location = self.find_crown_location(location)
+                    self.locate_connections(input_crown_location)
+                        
+              
 
     def find_crown_ocean(self):
         #This is for the crown_ocean in all rotations
@@ -452,70 +232,14 @@ class image_handler():
                     location = min_loc
                 else: 
                     location = max_loc
-                if math.isclose(self.max_val, 1, abs_tol=0.023) == True:
-                    print(method)
+                if math.isclose(self.max_val, 1, abs_tol=0.02) == True:
                     bottom_right = (location[0] + w, location[1] + h)
                     self.img = cv.rectangle(self.img, location, bottom_right, 0, -1)
+                    self.crowns_made.append(location)
+                    input_crown_location = self.find_crown_location(location)
+                    self.locate_connections(input_crown_location)
 
-                    if location[0] > 0 and location[0] < 100 and location[1] > 0 and location[1] < 100:
-                        input_crown_location = self.area_map[0,0]
-                    elif location[0] > 100 and location[0] < 200 and location[1] > 0 and location[1] < 100:
-                        input_crown_location = self.area_map[1,0]
-                    elif location[0] > 200 and location[0] < 300 and location[1] > 0 and location[1] < 100:
-                        input_crown_location = self.area_map[2,0]
-                    elif location[0] > 300 and location[0] < 400 and location[1] > 0 and location[1] < 100:
-                        input_crown_location = self.area_map[3,0]
-                    elif location[0] > 400 and location[0] < 500 and location[1] > 0 and location[1] < 100:
-                        input_crown_location = self.area_map[4,0]
-                    
-                    elif location[0] > 0 and location[0] < 100 and location[1] > 100 and location[1] < 200:
-                        input_crown_location = self.area_map[0,1]
-                    elif location[0] > 100 and location[0] < 200 and location[1] > 100 and location[1] < 200:
-                        input_crown_location = self.area_map[1,1]
-                    elif location[0] > 200 and location[0] < 300 and location[1] > 100 and location[1] < 200:
-                        input_crown_location = self.area_map[2,1]
-                    elif location[0] > 300 and location[0] < 400 and location[1] > 100 and location[1] < 200:
-                        input_crown_location = self.area_map[3,1]
-                    elif location[0] > 400 and location[0] < 500 and location[1] > 100 and location[1] < 200:
-                        input_crown_location = self.area_map[4,1]
-
-                    elif location[0] > 0 and location[0] < 100 and location[1] > 200 and location[1] < 300:
-                        input_crown_location = self.area_map[0,2]
-                    elif location[0] > 100 and location[0] < 200 and location[1] > 200 and location[1] < 300:
-                        input_crown_location = self.area_map[1,2]
-                    elif location[0] > 200 and location[0] < 300 and location[1] > 200 and location[1] < 300:
-                        input_crown_location = self.area_map[2,2]
-                    elif location[0] > 300 and location[0] < 400 and location[1] > 200 and location[1] < 300:
-                        input_crown_location = self.area_map[3,2]
-                    elif location[0] > 400 and location[0] < 500 and location[1] > 200 and location[1] < 300:
-                        input_crown_location = self.area_map[4,2]
-
-                    elif location[0] > 0 and location[0] < 100 and location[1] > 300 and location[1] < 400:
-                        input_crown_location = self.area_map[0,3]
-                    elif location[0] > 100 and location[0] < 200 and location[1] > 300 and location[1] < 400:
-                        input_crown_location = self.area_map[1,3]
-                    elif location[0] > 200 and location[0] < 300 and location[1] > 300 and location[1] < 400:
-                        input_crown_location = self.area_map[2,3]
-                    elif location[0] > 300 and location[0] < 400 and location[1] > 300 and location[1] < 400:
-                        input_crown_location = self.area_map[3,3]
-                    elif location[0] > 400 and location[0] < 500 and location[1] > 300 and location[1] < 400:
-                        input_crown_location = self.area_map[4,3]
-                    
-                    elif location[0] > 0 and location[0] < 100 and location[1] > 400 and location[1] < 500:
-                        input_crown_location = self.area_map[0,4]
-                    elif location[0] > 100 and location[0] < 200 and location[1] > 400 and location[1] < 500:
-                        input_crown_location = self.area_map[1,4]
-                    elif location[0] > 200 and location[0] < 300 and location[1] > 400 and location[1] < 500:
-                        input_crown_location = self.area_map[2,4]
-                    elif location[0] > 300 and location[0] < 400 and location[1] > 400 and location[1] < 500:
-                        input_crown_location = self.area_map[3,4]
-                    elif location[0] > 400 and location[0] < 500 and location[1] > 400 and location[1] < 500:
-                        input_crown_location = self.area_map[4,4]
-                    area = 2
-                    self.locate_connections(input_crown_location, area)
-
-                else: 
-                    pass  
+               
 
     def find_tower(self):#Function to find the tower and change the color values to 0 to locate it easier.
         #This is for blue castles with no house but kinda works for green and pink as well
@@ -536,11 +260,9 @@ class image_handler():
                 else: 
                     location = max_loc
                 if math.isclose(self.max_val, 1, abs_tol=0.01) == True:
-                    print(method)
                     bottom_right = (location[0] + w, location[1] + h)
                     self.img = cv.rectangle(self.img, location, bottom_right, 0, -1)
-                else: 
-                    pass
+                
         #This is for yellow castles with no house
         self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
         self.template_tower_n_h = cv.imread(r"Detect_squares.py/Assests/castle_n_h_yellow.png", 0)#tower with no house on.
@@ -559,11 +281,9 @@ class image_handler():
                 else: 
                     location = max_loc
                 if math.isclose(self.max_val, 1, abs_tol=0.015) == True:
-                    print(method)
                     bottom_right = (location[0] + w, location[1] + h)
                     self.img = cv.rectangle(self.img, location, bottom_right, 0, -1)
-                else: 
-                    pass
+                
          #This is for green castles with no house
         self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
         self.template_tower_n_h = cv.imread(r"Detect_squares.py/Assests/castle_n_h_green.png", 0)#tower with no house on.
@@ -582,11 +302,9 @@ class image_handler():
                 else: 
                     location = max_loc
                 if math.isclose(self.max_val, 1, abs_tol=0.015) == True:
-                    print(method)
                     bottom_right = (location[0] + w, location[1] + h)
                     self.img = cv.rectangle(self.img, location, bottom_right, 0, -1)
-                else: 
-                    pass
+                
 
     def mean_cal(self):
         self.mean_array = np.zeros((5, 5, 3), dtype='uint8')
@@ -630,8 +348,8 @@ class image_handler():
         for j in range(self.board_size):
             for i in range(self.board_size):
                 b,g,r = self.mean_array[i,j]
-                print(i,j)
-                print(self.mean_array[i,j])
+                #print(i,j)
+                #print(self.mean_array[i,j])
                 if b < th_tower[0][1] and g < th_tower[1][1] and r < th_tower[2][1]:
                     self.landscape_map[i,j] = "tower"
                     self.area_map[i,j] = tower
@@ -687,49 +405,58 @@ class image_handler():
                     self.landscape_map[i,j] = "not figured"
                     self.area_map[i,j] = not_figured
 
-    def locate_connections(self, input_crown_location, area):
+    def locate_connections(self, input_crown_location):
         self.object_array = np.zeros((5, 5), dtype="uint8") 
         print("input_crown = ", input_crown_location)
-        a = 0
-        for i in range(self.board_size):
-            for j in range(self.board_size):
-                if self.area_map[i,j] == area:
-                    self.object_array[i,j] = a 
-                    if self.object_array[i,j-1] != 0 or self.object_array[i-1,j] != 0:
-                        if self.object_array[i,j-1] != 0:
-                            self.object_array[i,j] = self.object_array[i,j-1]
-                        if self.object_array[i-1,j] != 0:
-                            self.object_array[i,j] = self.object_array[i-1,j]
-                            if self.object_array[i-1,j] == a-1:
-                                for k in range(self.board_size):
-                                    for l in range(self.board_size):
-                                        if self.object_array[k,l] == a: 
-                                            self.object_array[k,l] = a-1 
-                                a -= 1                
-                    else:
-                        a += 1
+        if type(input_crown_location) == list: 
+            a = 0
+            for i in range(self.board_size):
+                for j in range(self.board_size):
+                    if self.area_map[i,j] == self.area_map[input_crown_location[0], input_crown_location[1]]:
                         self.object_array[i,j] = a 
-                else: 
-                    pass
-       
-        count_1 = np.count_nonzero(self.object_array == 1)
-        count_2 = np.count_nonzero(self.object_array == 2)
-        count_3 = np.count_nonzero(self.object_array == 3)
-        count_4 = np.count_nonzero(self.object_array == 4)
-        count_5 = np.count_nonzero(self.object_array == 5)
-        print('Total occurences of "3" in array: ', count_2)
-    
-        if input_crown_location == 1: 
-            self.point_counter += count_1 
-        if input_crown_location == 2: 
-            self.point_counter += count_1 
-        if input_crown_location == 3: 
-            self.point_counter += count_1 
-        if input_crown_location == 4: 
-            self.point_counter += count_1 
-        if input_crown_location == 5: 
-            self.point_counter += count_1 
-
+                        if self.object_array[i,j-1] != 0 or self.object_array[i-1,j] != 0:
+                            if self.object_array[i,j-1] != 0:
+                                self.object_array[i,j] = self.object_array[i,j-1]
+                            if self.object_array[i-1,j] != 0:
+                                self.object_array[i,j] = self.object_array[i-1,j]
+                                if self.object_array[i-1,j] == a-1:
+                                    for k in range(self.board_size):
+                                        for l in range(self.board_size):
+                                            if self.object_array[k,l] == a: 
+                                                self.object_array[k,l] = a-1 
+                                    a -= 1                
+                        else:
+                            a += 1
+                            self.object_array[i,j] = a 
+                    
+        
+            count_1 = np.count_nonzero(self.object_array == 1)
+            count_2 = np.count_nonzero(self.object_array == 2)
+            count_3 = np.count_nonzero(self.object_array == 3)
+            count_4 = np.count_nonzero(self.object_array == 4)
+            count_5 = np.count_nonzero(self.object_array == 5)
+            count_6 = np.count_nonzero(self.object_array == 6)
+            """print('Total occurences of "1" in array: ', count_1)
+            print('Total occurences of "2" in array: ', count_2)
+            print('Total occurences of "3" in array: ', count_3)
+            print('Total occurences of "4" in array: ', count_4)
+            print('Total occurences of "5" in array: ', count_5)
+            print('Total occurences of "6" in array: ', count_6)"""
+        
+            if self.object_array[input_crown_location[0],input_crown_location[1]] == 1: 
+                self.point_counter = self.point_counter + count_1 
+            if self.object_array[input_crown_location[0],input_crown_location[1]] == 2: 
+                self.point_counter = self.point_counter + count_2 
+            if self.object_array[input_crown_location[0],input_crown_location[1]] == 3: 
+                self.point_counter = self.point_counter + count_3 
+            if self.object_array[input_crown_location[0],input_crown_location[1]] == 4: 
+                self.point_counter = self.point_counter + count_4 
+            if self.object_array[input_crown_location[0],input_crown_location[1]] == 5: 
+                self.point_counter = self.point_counter + count_5 
+            if self.object_array[input_crown_location[0],input_crown_location[1]] == 6: 
+                self.point_counter = self.point_counter + count_6
+            print(self.object_array)
+            
 image_test = image_handler()
 image_test.find_tower()
 image_test.mean_cal()
@@ -744,9 +471,8 @@ print("points = ", image_test.point_counter)
 
 image = image_handler()#Desplays the normal picture
 
-print(image_test.object_array)
 print(image_test.landscape_map)
-print(image_test.max_val)
+
 
 mean_resized = cv.resize(image_test.mean_array, [500,500], interpolation = cv.INTER_AREA)
 
