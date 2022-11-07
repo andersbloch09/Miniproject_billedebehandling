@@ -12,7 +12,7 @@ class image_handler():
     def find_crown_meadow(self):
          #This is for the crown_meadow in all rotations
         self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
-        self.crown_meadow = cv.imread(r"Detect_squares.py\Assests\crown_meadow.png", 0)
+        self.crown_meadow = cv.imread(r"Detect_squares.py/Assests/crown_meadow.png", 0)
 
         methods =  [cv.TM_CCOEFF, cv.TM_CCOEFF_NORMED, cv.TM_CCORR,
             cv.TM_CCORR_NORMED, cv.TM_SQDIFF]
@@ -97,7 +97,7 @@ class image_handler():
     def find_crown_swamp(self):
         #This is for the crown_swamp in all rotations
         self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
-        self.crown_swamp = cv.imread(r"Detect_squares.py\Assests\crown_swamp.png", 0)
+        self.crown_swamp = cv.imread(r"Detect_squares.py/Assests/crown_swamp.png", 0)
 
         methods =  [cv.TM_CCOEFF, cv.TM_CCOEFF_NORMED, cv.TM_CCORR,
             cv.TM_CCORR_NORMED, cv.TM_SQDIFF]
@@ -182,7 +182,7 @@ class image_handler():
     def find_crown_forrest(self):
         #This is for the crown_forrest in all rotations
         self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
-        self.crown_forrest = cv.imread(r"Detect_squares.py\Assests\crown_forrest.png", 0)
+        self.crown_forrest = cv.imread(r"Detect_squares.py/Assests/crown_forrest.png", 0)
 
         methods =  [cv.TM_CCOEFF, cv.TM_CCOEFF_NORMED, cv.TM_CCORR,
             cv.TM_CCORR_NORMED, cv.TM_SQDIFF]
@@ -267,7 +267,7 @@ class image_handler():
     def find_crown_mine(self):
         #This is for the crown_mine in all rotations
         self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
-        self.crown_mine = cv.imread(r"Detect_squares.py\Assests\crown_mine.png", 0)
+        self.crown_mine = cv.imread(r"Detect_squares.py/Assests/crown_mine.png", 0)
 
         methods =  [cv.TM_CCOEFF, cv.TM_CCOEFF_NORMED, cv.TM_CCORR,
             cv.TM_CCORR_NORMED, cv.TM_SQDIFF]
@@ -352,7 +352,7 @@ class image_handler():
     def find_crown_corn(self):
         #This is for the crown_corn in all rotations
         self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
-        self.crown_corn = cv.imread(r"Detect_squares.py\Assests\crown_corn.png", 0)
+        self.crown_corn = cv.imread(r"Detect_squares.py/Assests/crown_corn.png", 0)
 
         methods =  [cv.TM_CCOEFF, cv.TM_CCOEFF_NORMED, cv.TM_CCORR,
             cv.TM_CCORR_NORMED, cv.TM_SQDIFF]
@@ -437,7 +437,7 @@ class image_handler():
     def find_crown_ocean(self):
         #This is for the crown_ocean in all rotations
         self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
-        self.crown_ocean = cv.imread(r"Detect_squares.py\Assests\crown_ocean.png", 0)
+        self.crown_ocean = cv.imread(r"Detect_squares.py/Assests/crown_ocean.png", 0)
         methods =  [cv.TM_CCOEFF, cv.TM_CCOEFF_NORMED, cv.TM_CCORR,
             cv.TM_CCORR_NORMED, cv.TM_SQDIFF]
         h, w = self.crown_ocean.shape
@@ -520,7 +520,7 @@ class image_handler():
     def find_tower(self):#Function to find the tower and change the color values to 0 to locate it easier.
         #This is for blue castles with no house but kinda works for green and pink as well
         self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
-        self.template_tower_n_h = cv.imread(r"Detect_squares.py\Assests\castle_n_h_blue_rotated.png", 0)#tower with no house on.
+        self.template_tower_n_h = cv.imread(r"Detect_squares.py/Assests/castle_n_h_blue_rotated.png", 0)#tower with no house on.
         methods =  [cv.TM_CCOEFF, cv.TM_CCOEFF_NORMED, cv.TM_CCORR,
             cv.TM_CCORR_NORMED, cv.TM_SQDIFF]
         h, w = self.template_tower_n_h.shape
@@ -543,7 +543,7 @@ class image_handler():
                     pass
         #This is for yellow castles with no house
         self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
-        self.template_tower_n_h = cv.imread(r"Detect_squares.py\Assests\castle_n_h_yellow.png", 0)#tower with no house on.
+        self.template_tower_n_h = cv.imread(r"Detect_squares.py/Assests/castle_n_h_yellow.png", 0)#tower with no house on.
         methods =  [cv.TM_CCOEFF, cv.TM_CCOEFF_NORMED, cv.TM_CCORR,
             cv.TM_CCORR_NORMED, cv.TM_SQDIFF]
         h, w = self.template_tower_n_h.shape
@@ -566,7 +566,7 @@ class image_handler():
                     pass
          #This is for green castles with no house
         self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
-        self.template_tower_n_h = cv.imread(r"Detect_squares.py\Assests\castle_n_h_green.png", 0)#tower with no house on.
+        self.template_tower_n_h = cv.imread(r"Detect_squares.py/Assests/castle_n_h_green.png", 0)#tower with no house on.
         methods =  [cv.TM_CCOEFF, cv.TM_CCOEFF_NORMED, cv.TM_CCORR,
             cv.TM_CCORR_NORMED, cv.TM_SQDIFF]
         h, w = self.template_tower_n_h.shape
