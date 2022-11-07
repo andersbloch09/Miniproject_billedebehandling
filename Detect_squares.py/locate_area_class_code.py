@@ -127,8 +127,7 @@ class image_handler():
                     input_crown_location = self.find_crown_location(location)
                     self.locate_connections(input_crown_location)
 
-              
-        
+                
     def find_crown_forrest(self):
         #This is for the crown_forrest in all rotations
         self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
@@ -155,8 +154,6 @@ class image_handler():
                     input_crown_location = self.find_crown_location(location)
                     self.locate_connections(input_crown_location)
                     
-
-        
 
     def find_crown_mine(self):
         #This is for the crown_mine in all rotations
@@ -185,7 +182,6 @@ class image_handler():
                     self.locate_connections(input_crown_location)
 
                
-
     def find_crown_corn(self):
         #This is for the crown_corn in all rotations
         self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
@@ -213,7 +209,6 @@ class image_handler():
                     self.locate_connections(input_crown_location)
                         
               
-
     def find_crown_ocean(self):
         #This is for the crown_ocean in all rotations
         self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
@@ -240,7 +235,6 @@ class image_handler():
                     self.locate_connections(input_crown_location)
 
                
-
     def find_tower(self):#Function to find the tower and change the color values to 0 to locate it easier.
         #This is for blue castles with no house but kinda works for green and pink as well
         self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
@@ -327,6 +321,7 @@ class image_handler():
                 r_mean = sta.mean(r_mean)
                 self.mean_array[i,j] = (b_mean, g_mean, r_mean)
 
+
     def find_landscape(self):
         corn = 1
         ocean = 2
@@ -404,6 +399,7 @@ class image_handler():
                 else:
                     self.landscape_map[i,j] = "not figured"
                     self.area_map[i,j] = not_figured
+
 
     def locate_connections(self, input_crown_location):
         self.object_array = np.zeros((5, 5), dtype="uint8") 
