@@ -2,6 +2,14 @@ import numpy as np
 import cv2
 import math
 
+tuple = [(2,1),(3,4)]
+
+print(tuple[0][1])
+
+
+
+
+
 img = cv2.imread(r'King Domino dataset\Cropped and perspective corrected boards\4.jpg', 0)
 template = cv2.imread(r'Detect_squares.py\Assests\castle_n_h_blue.png', 0)
 h, w = template.shape

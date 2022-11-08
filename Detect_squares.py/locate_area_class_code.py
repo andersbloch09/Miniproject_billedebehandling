@@ -9,13 +9,17 @@ class image_handler():
         self.board_size = 5
         self.point_counter = 0
         self.crowns_made = [(-500,-500)]
+        self.b = 0
 
     def find_crown_location(self, location):
         input_crown_location = 0
         print("crowns made",self.crowns_made)
-        for crown in self.crowns_made:
-            if location[0] < crown[0]-15 or location[0] > crown[0] + 15 and location[1] < crown[1]-15 or location[1] > crown[1]+15:
-                print("crown0,crown1",crown[0],crown[1], "location0 og 1", location[0],location[1])
+        for i in range(len(self.crowns_made)):
+            
+            if (location[0] < self.crowns_made[i][0]-10 or location[1] < self.crowns_made[i][1]-10) and (location[0] > self.crowns_made[i][0]+10 or location[1] > self.crowns_made[i][1]+10):
+                #print("crown0,crown1",self.crowns_made[i][0],self.crowns_made[i][1], "location0 og 1", location[0],location[1])
+                self.b += 1
+                print("b = ", self.b, "  i = ", i)
                 if location[0] > 0 and location[0] < 100 and location[1] > 0 and location[1] < 100:
                     input_crown_location = [0,0]
                 elif location[0] > 100 and location[0] < 200 and location[1] > 0 and location[1] < 100:
@@ -70,9 +74,8 @@ class image_handler():
                     input_crown_location = [4,3]
                 elif location[0] > 400 and location[0] < 500 and location[1] > 400 and location[1] < 500:
                     input_crown_location = [4,4]
-                    
+
         return(input_crown_location)
-    
     
     def find_crown_meadow(self):
          #This is for the crown_meadow in all rotations
@@ -89,18 +92,16 @@ class image_handler():
                 gray_copy = self.gray.copy()
                 res = cv.matchTemplate(gray_copy, self.crown_meadow, method)
                 min_val, self.max_val, min_loc, max_loc = cv.minMaxLoc(res)
-                if method in [cv.TM_SQDIFF, cv.TM_SQDIFF_NORMED]:
-                    location = min_loc
-                else: 
-                    location = max_loc
+                
+                
+                location = max_loc
                 if math.isclose(self.max_val, 1, abs_tol=0.01) == True:
                     bottom_right = (location[0] + w, location[1] + h)
                     self.img = cv.rectangle(self.img, location, bottom_right, 0, -1)
                     self.crowns_made.append(location)
                     input_crown_location = self.find_crown_location(location)
                     self.locate_connections(input_crown_location)
-                
-
+            
     def find_crown_swamp(self):
         #This is for the crown_swamp in all rotations
         self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
@@ -126,8 +127,7 @@ class image_handler():
                     self.crowns_made.append(location)
                     input_crown_location = self.find_crown_location(location)
                     self.locate_connections(input_crown_location)
-
-                
+          
     def find_crown_forrest(self):
         #This is for the crown_forrest in all rotations
         self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
@@ -154,7 +154,6 @@ class image_handler():
                     input_crown_location = self.find_crown_location(location)
                     self.locate_connections(input_crown_location)
                     
-
     def find_crown_mine(self):
         #This is for the crown_mine in all rotations
         self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
@@ -180,8 +179,7 @@ class image_handler():
                     self.crowns_made.append(location)
                     input_crown_location = self.find_crown_location(location)
                     self.locate_connections(input_crown_location)
-
-               
+          
     def find_crown_corn(self):
         #This is for the crown_corn in all rotations
         self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
@@ -207,8 +205,7 @@ class image_handler():
                     self.crowns_made.append(location)
                     input_crown_location = self.find_crown_location(location)
                     self.locate_connections(input_crown_location)
-                        
-              
+                                  
     def find_crown_ocean(self):
         #This is for the crown_ocean in all rotations
         self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
@@ -233,8 +230,7 @@ class image_handler():
                     self.crowns_made.append(location)
                     input_crown_location = self.find_crown_location(location)
                     self.locate_connections(input_crown_location)
-
-               
+           
     def find_tower(self):#Function to find the tower and change the color values to 0 to locate it easier.
         #This is for blue castles with no house but kinda works for green and pink as well
         self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
@@ -299,7 +295,6 @@ class image_handler():
                     bottom_right = (location[0] + w, location[1] + h)
                     self.img = cv.rectangle(self.img, location, bottom_right, 0, -1)
                 
-
     def mean_cal(self):
         self.mean_array = np.zeros((5, 5, 3), dtype='uint8')
         for j in range(self.board_size):
@@ -320,7 +315,6 @@ class image_handler():
                 g_mean = sta.mean(g_mean)
                 r_mean = sta.mean(r_mean)
                 self.mean_array[i,j] = (b_mean, g_mean, r_mean)
-
 
     def find_landscape(self):
         corn = 1
@@ -400,7 +394,6 @@ class image_handler():
                     self.landscape_map[i,j] = "not figured"
                     self.area_map[i,j] = not_figured
 
-
     def locate_connections(self, input_crown_location):
         self.object_array = np.zeros((5, 5), dtype="uint8") 
         print("input_crown = ", input_crown_location)
@@ -452,6 +445,7 @@ class image_handler():
             if self.object_array[input_crown_location[0],input_crown_location[1]] == 6: 
                 self.point_counter = self.point_counter + count_6
             print(self.object_array)
+            print("points  =   ",  self.point_counter)
             
 image_test = image_handler()
 image_test.find_tower()
