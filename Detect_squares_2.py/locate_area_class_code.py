@@ -5,7 +5,8 @@ import math
 
 class image_handler():
     def __init__(self):
-        self.img = cv.imread(r"King Domino dataset/Cropped and perspective corrected boards/21.jpg",1)
+        self.pic_num = 21
+        self.img = cv.imread(r"King Domino dataset/Cropped and perspective corrected boards/"+str(self.pic_num)+".jpg",1)
         self.board_size = 5
         self.point_counter = 0
         self.crowns_made = [(-500,-500)]

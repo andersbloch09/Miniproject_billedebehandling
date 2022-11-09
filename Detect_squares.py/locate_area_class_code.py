@@ -16,7 +16,7 @@ class image_handler():
         print("crowns made",self.crowns_made)
         for i in range(len(self.crowns_made)):
             
-            if (location[0] < self.crowns_made[i][0]-10 or location[1] < self.crowns_made[i][1]-10) and (location[0] > self.crowns_made[i][0]+10 or location[1] > self.crowns_made[i][1]+10):
+            if location[0] < self.crowns_made[i][0]-10 or location[1] < self.crowns_made[i][1]-10 and location[0] > self.crowns_made[i][0]+10 or location[1] > self.crowns_made[i][1]+10:
                 #print("crown0,crown1",self.crowns_made[i][0],self.crowns_made[i][1], "location0 og 1", location[0],location[1])
                 self.b += 1
                 print("b = ", self.b, "  i = ", i)
