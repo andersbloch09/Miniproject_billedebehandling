@@ -5,18 +5,19 @@ import math
 
 class image_handler():
     def __init__(self):
-        self.img = cv.imread(r"King Domino dataset/Cropped and perspective corrected boards/4.jpg",1)
+        self.img = cv.imread(r"King Domino dataset/Cropped and perspective corrected boards/21.jpg",1)
         self.board_size = 5
         self.point_counter = 0
         self.crowns_made = [(-500,-500)]
         self.b = 0
+        self.threshold = 0.6
 
     def find_crown_location(self, location):
         input_crown_location = 0
         print("crowns made",self.crowns_made)
         for i in range(len(self.crowns_made)):
             
-            if (location[0] < self.crowns_made[i][0]-10 or location[1] < self.crowns_made[i][1]-10) and (location[0] > self.crowns_made[i][0]+10 or location[1] > self.crowns_made[i][1]+10):
+            if location[0] < self.crowns_made[i][0]-5 or location[1] < self.crowns_made[i][1]-5 and location[0] > self.crowns_made[i][0]+5 or location[1] > self.crowns_made[i][1]+5:
                 #print("crown0,crown1",self.crowns_made[i][0],self.crowns_made[i][1], "location0 og 1", location[0],location[1])
                 self.b += 1
                 print("b = ", self.b, "  i = ", i)
@@ -81,72 +82,63 @@ class image_handler():
          #This is for the crown_meadow in all rotations
         self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
         self.crown_meadow = cv.imread(r"Detect_squares.py/Assests/crown_meadow.jpg", 0)
+    
+        method =  cv.TM_CCORR_NORMED
+        w, h = self.crown_meadow.shape
         
-        methods =  [cv.TM_CCOEFF, cv.TM_CCOEFF_NORMED, cv.TM_CCORR,
-            cv.TM_CCORR_NORMED, cv.TM_SQDIFF]
-        h, w = self.crown_meadow.shape
+        
+        
         for i in range(4):
-            for method in methods:
-                if i > 0: 
-                    self.crown_meadow = cv.rotate(self.crown_meadow, cv.ROTATE_90_CLOCKWISE)
-                gray_copy = self.gray.copy()
-                res = cv.matchTemplate(gray_copy, self.crown_meadow, method)
-                min_val, self.max_val, min_loc, max_loc = cv.minMaxLoc(res)
-                
-                
-                location = max_loc
-                if math.isclose(self.max_val, 1, abs_tol=0.01) == True:
-                    bottom_right = (location[0] + w, location[1] + h)
-                    self.img = cv.rectangle(self.img, location, bottom_right, 0, -1)
-                    self.crowns_made.append(location)
-                    input_crown_location = self.find_crown_location(location)
-                    self.locate_connections(input_crown_location)
+            if i > 0: 
+                self.crown_meadow = cv.rotate(self.crown_meadow, cv.ROTATE_90_CLOCKWISE)
+            gray_copy = self.gray.copy()
+            res = cv.matchTemplate(gray_copy, self.crown_meadow, method)
+            location = np.where (res >= self.threshold)
+            #res = cv.matchTemplate(gray_copy, self.crown_meadow, method)
+            #min_val, self.max_val, min_loc, max_loc = cv.minMaxLoc(res)
+            #location = max_loc
+            #if math.isclose(self.max_val, 1, abs_tol=0.01) == True:
+            bottom_right = (location[0] + w, location[1] + h)
+            self.img = cv.rectangle(self.img, location, bottom_right, 0, -1)
+            self.crowns_made.append(location)
+            input_crown_location = self.find_crown_location(location)
+            self.locate_connections(input_crown_location)
             
     def find_crown_swamp(self):
         #This is for the crown_swamp in all rotations
         self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
         self.crown_swamp = cv.imread(r"Detect_squares.py/Assests/crown_swamp.png", 0)
 
-        methods =  [cv.TM_CCOEFF, cv.TM_CCOEFF_NORMED, cv.TM_CCORR,
-            cv.TM_CCORR_NORMED, cv.TM_SQDIFF]
+        method =  cv.TM_CCORR_NORMED
         h, w = self.crown_swamp.shape
         for i in range(4):
-            for method in methods:
-                if i > 0: 
-                    self.crown_swamp = cv.rotate(self.crown_swamp, cv.ROTATE_90_CLOCKWISE)
-                gray_copy = self.gray.copy()
-                res = cv.matchTemplate(gray_copy, self.crown_swamp, method)
-                min_val, self.max_val, min_loc, max_loc = cv.minMaxLoc(res)
-                if method in [cv.TM_SQDIFF, cv.TM_SQDIFF_NORMED]:
-                    location = min_loc
-                else: 
-                    location = max_loc
-                if math.isclose(self.max_val, 1, abs_tol=0.015) == True:
-                    bottom_right = (location[0] + w, location[1] + h)
-                    self.img = cv.rectangle(self.img, location, bottom_right, 0, -1)
-                    self.crowns_made.append(location)
-                    input_crown_location = self.find_crown_location(location)
-                    self.locate_connections(input_crown_location)
+            if i > 0: 
+                self.crown_swamp = cv.rotate(self.crown_swamp, cv.ROTATE_90_CLOCKWISE)
+            gray_copy = self.gray.copy()
+            res = cv.matchTemplate(gray_copy, self.crown_swamp, method)
+            min_val, self.max_val, min_loc, max_loc = cv.minMaxLoc(res)
+            location = max_loc
+            if math.isclose(self.max_val, 1, abs_tol=0.013) == True:
+                bottom_right = (location[0] + w, location[1] + h)
+                self.img = cv.rectangle(self.img, location, bottom_right, 0, -1)
+                self.crowns_made.append(location)
+                input_crown_location = self.find_crown_location(location)
+                self.locate_connections(input_crown_location)
           
     def find_crown_forrest(self):
         #This is for the crown_forrest in all rotations
         self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
         self.crown_forrest = cv.imread(r"Detect_squares.py/Assests/crown_mine.png", 0)
 
-        methods =  [cv.TM_CCOEFF, cv.TM_CCOEFF_NORMED, cv.TM_CCORR,
-            cv.TM_CCORR_NORMED, cv.TM_SQDIFF]
+        method =  cv.TM_CCORR_NORMED
         h, w = self.crown_forrest.shape
         for i in range(4):
-            for method in methods:
                 if i > 0: 
                     self.crown_forrest = cv.rotate(self.crown_forrest, cv.ROTATE_90_CLOCKWISE)
                 gray_copy = self.gray.copy()
                 res = cv.matchTemplate(gray_copy, self.crown_forrest, method)
                 min_val, self.max_val, min_loc, max_loc = cv.minMaxLoc(res)
-                if method in [cv.TM_SQDIFF, cv.TM_SQDIFF_NORMED]:
-                    location = min_loc
-                else: 
-                    location = max_loc
+                location = max_loc
                 if math.isclose(self.max_val, 1, abs_tol=0.02) == True:
                     bottom_right = (location[0] + w, location[1] + h)
                     self.img = cv.rectangle(self.img, location, bottom_right, 0, -1)
@@ -159,77 +151,62 @@ class image_handler():
         self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
         self.crown_mine = cv.imread(r"Detect_squares.py/Assests/crown_mine.png", 0)
 
-        methods =  [cv.TM_CCOEFF, cv.TM_CCOEFF_NORMED, cv.TM_CCORR,
-            cv.TM_CCORR_NORMED, cv.TM_SQDIFF]
+        method = cv.TM_CCORR_NORMED
         h, w = self.crown_mine.shape
         for i in range(4):
-            for method in methods:
-                if i > 0: 
-                    self.crown_mine = cv.rotate(self.crown_mine, cv.ROTATE_90_CLOCKWISE)
-                gray_copy = self.gray.copy()
-                res = cv.matchTemplate(gray_copy, self.crown_mine, method)
-                min_val, self.max_val, min_loc, max_loc = cv.minMaxLoc(res)
-                if method in [cv.TM_SQDIFF, cv.TM_SQDIFF_NORMED]:
-                    location = min_loc
-                else: 
-                    location = max_loc
-                if math.isclose(self.max_val, 1, abs_tol=0.03) == True:
-                    bottom_right = (location[0] + w, location[1] + h)
-                    self.img = cv.rectangle(self.img, location, bottom_right, 0, -1)
-                    self.crowns_made.append(location)
-                    input_crown_location = self.find_crown_location(location)
-                    self.locate_connections(input_crown_location)
+            if i > 0: 
+                self.crown_mine = cv.rotate(self.crown_mine, cv.ROTATE_90_CLOCKWISE)
+            gray_copy = self.gray.copy()
+            res = cv.matchTemplate(gray_copy, self.crown_mine, method)
+            min_val, self.max_val, min_loc, max_loc = cv.minMaxLoc(res)
+            location = max_loc
+            if math.isclose(self.max_val, 1, abs_tol=0.03) == True:
+                bottom_right = (location[0] + w, location[1] + h)
+                self.img = cv.rectangle(self.img, location, bottom_right, 0, -1)
+                self.crowns_made.append(location)
+                input_crown_location = self.find_crown_location(location)
+                self.locate_connections(input_crown_location)
           
     def find_crown_corn(self):
         #This is for the crown_corn in all rotations
         self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
         self.crown_corn = cv.imread(r"Detect_squares.py/Assests/crown_corn.png", 0)
 
-        methods =  [cv.TM_CCOEFF, cv.TM_CCOEFF_NORMED, cv.TM_CCORR,
-            cv.TM_CCORR_NORMED, cv.TM_SQDIFF]
+        method =  cv.TM_CCORR_NORMED
         h, w = self.crown_corn.shape
         for i in range(4):
-            for method in methods:
-                if i > 0: 
-                    self.crown_corn = cv.rotate(self.crown_corn, cv.ROTATE_90_CLOCKWISE)
-                gray_copy = self.gray.copy()
-                res = cv.matchTemplate(gray_copy, self.crown_corn, method)
-                min_val, self.max_val, min_loc, max_loc = cv.minMaxLoc(res)
-                if method in [cv.TM_SQDIFF, cv.TM_SQDIFF_NORMED]:
-                    location = min_loc
-                else: 
-                    location = max_loc
-                if math.isclose(self.max_val, 1, abs_tol=0.002) == True:
-                    bottom_right = (location[0] + w, location[1] + h)
-                    self.img = cv.rectangle(self.img, location, bottom_right, 0, -1)
-                    self.crowns_made.append(location)
-                    input_crown_location = self.find_crown_location(location)
-                    self.locate_connections(input_crown_location)
+            if i > 0: 
+                self.crown_corn = cv.rotate(self.crown_corn, cv.ROTATE_90_CLOCKWISE)
+            gray_copy = self.gray.copy()
+            res = cv.matchTemplate(gray_copy, self.crown_corn, method)
+            min_val, self.max_val, min_loc, max_loc = cv.minMaxLoc(res)
+            location = max_loc
+            if math.isclose(self.max_val, 1, abs_tol=0.002) == True:
+                bottom_right = (location[0] + w, location[1] + h)
+                self.img = cv.rectangle(self.img, location, bottom_right, 0, -1)
+                self.crowns_made.append(location)
+                input_crown_location = self.find_crown_location(location)
+                self.locate_connections(input_crown_location)
                                   
     def find_crown_ocean(self):
         #This is for the crown_ocean in all rotations
         self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
         self.crown_ocean = cv.imread(r"Detect_squares.py/Assests/crown_ocean.png", 0)
-        methods =  [cv.TM_CCOEFF, cv.TM_CCOEFF_NORMED, cv.TM_CCORR,
-            cv.TM_CCORR_NORMED, cv.TM_SQDIFF]
+        method =  cv.TM_CCORR_NORMED
         h, w = self.crown_ocean.shape
         for i in range(4):
-            for method in methods:
-                if i > 0: 
-                    self.crown_ocean = cv.rotate(self.crown_ocean, cv.ROTATE_90_CLOCKWISE)
-                gray_copy = self.gray.copy()
-                res = cv.matchTemplate(gray_copy, self.crown_ocean, method)
-                min_val, self.max_val, min_loc, max_loc = cv.minMaxLoc(res)
-                if method in [cv.TM_SQDIFF, cv.TM_SQDIFF_NORMED]:
-                    location = min_loc
-                else: 
-                    location = max_loc
-                if math.isclose(self.max_val, 1, abs_tol=0.02) == True:
-                    bottom_right = (location[0] + w, location[1] + h)
-                    self.img = cv.rectangle(self.img, location, bottom_right, 0, -1)
-                    self.crowns_made.append(location)
-                    input_crown_location = self.find_crown_location(location)
-                    self.locate_connections(input_crown_location)
+            if i > 0: 
+                self.crown_ocean = cv.rotate(self.crown_ocean, cv.ROTATE_90_CLOCKWISE)
+            gray_copy = self.gray.copy()
+            res = cv.matchTemplate(gray_copy, self.crown_ocean, method)
+            min_val, self.max_val, min_loc, max_loc = cv.minMaxLoc(res)
+            location = max_loc
+            if math.isclose(self.max_val, 1, abs_tol=0.02) == True:
+                bottom_right = (location[0] + w, location[1] + h)
+                self.img = cv.rectangle(self.img, location, bottom_right, 0, -1)
+                self.crowns_made.append(location)
+                input_crown_location = self.find_crown_location(location)
+                self.locate_connections(input_crown_location)
            
     def find_tower(self):#Function to find the tower and change the color values to 0 to locate it easier.
         #This is for blue castles with no house but kinda works for green and pink as well
