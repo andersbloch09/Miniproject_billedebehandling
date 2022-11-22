@@ -87,8 +87,6 @@ class image_handler():
         method =  cv.TM_CCORR_NORMED
         w, h = self.crown_meadow.shape
         
-        
-        
         for i in range(4):
             if i > 0: 
                 self.crown_meadow = cv.rotate(self.crown_meadow, cv.ROTATE_90_CLOCKWISE)
