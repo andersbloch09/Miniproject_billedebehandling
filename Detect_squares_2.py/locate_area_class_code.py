@@ -15,66 +15,66 @@ class image_handler():
 
     def find_crown_location(self, location, pt):
         input_crown_location = 0
-        print("crowns made",self.crowns_made)
+        #print("crowns made",self.crowns_made)
         for i in range(len(self.crowns_made)):
     
             if (abs(location[0][i] - pt[1]) < 5) and (abs(location[1][i] - pt[0]) < 5):
                 #print("crown0,crown1",self.crowns_made[i][0],self.crowns_made[i][1], "location0 og 1", location[0],location[1])
                 self.b += 1
-                print("b = ", self.b, "  i = ", i)
-                if location[0] > 0 and location[0] < 100 and location[1] > 0 and location[1] < 100:
+                #print("b = ", self.b, "  i = ", i)
+                if pt[0] > 0 and pt[0] < 100 and pt[1] > 0 and pt[1] < 100:
                     input_crown_location = [0,0]
-                elif location[0] > 100 and location[0] < 200 and location[1] > 0 and location[1] < 100:
+                elif pt[0] > 100 and pt[0] < 200 and pt[1] > 0 and pt[1] < 100:
                     input_crown_location = [0,1]
-                elif location[0] > 200 and location[0] < 300 and location[1] > 0 and location[1] < 100:
+                elif pt[0] > 200 and pt[0] < 300 and pt[1] > 0 and pt[1] < 100:
                     input_crown_location = [0,2]
-                elif location[0] > 300 and location[0] < 400 and location[1] > 0 and location[1] < 100:
+                elif pt[0] > 300 and pt[0] < 400 and pt[1] > 0 and pt[1] < 100:
                     input_crown_location = [0,3]
-                elif location[0] > 400 and location[0] < 500 and location[1] > 0 and location[1] < 100:
+                elif pt[0] > 400 and pt[0] < 500 and pt[1] > 0 and pt[1] < 100:
                     input_crown_location = [0,4]
                 
-                elif location[0] > 0 and location[0] < 100 and location[1] > 100 and location[1] < 200:
+                elif pt[0] > 0 and pt[0] < 100 and pt[1] > 100 and pt[1] < 200:
                     input_crown_location = [1,0]
-                elif location[0] > 100 and location[0] < 200 and location[1] > 100 and location[1] < 200:
+                elif pt[0] > 100 and pt[0] < 200 and pt[1] > 100 and pt[1] < 200:
                     input_crown_location = [1,1]
-                elif location[0] > 200 and location[0] < 300 and location[1] > 100 and location[1] < 200:
+                elif pt[0] > 200 and pt[0] < 300 and pt[1] > 100 and pt[1] < 200:
                     input_crown_location = [1,2]
-                elif location[0] > 300 and location[0] < 400 and location[1] > 100 and location[1] < 200:
+                elif pt[0] > 300 and pt[0] < 400 and pt[1] > 100 and pt[1] < 200:
                     input_crown_location = [1,3]
-                elif location[0] > 400 and location[0] < 500 and location[1] > 100 and location[1] < 200:
+                elif pt[0] > 400 and pt[0] < 500 and pt[1] > 100 and pt[1] < 200:
                     input_crown_location = [1,4]
 
-                elif location[0] > 0 and location[0] < 100 and location[1] > 200 and location[1] < 300:
+                elif pt[0] > 0 and pt[0] < 100 and pt[1] > 200 and pt[1] < 300:
                     input_crown_location = [2,0]
-                elif location[0] > 100 and location[0] < 200 and location[1] > 200 and location[1] < 300:
+                elif pt[0] > 100 and pt[0] < 200 and pt[1] > 200 and pt[1] < 300:
                     input_crown_location = [2,1]
-                elif location[0] > 200 and location[0] < 300 and location[1] > 200 and location[1] < 300:
+                elif pt[0] > 200 and pt[0] < 300 and pt[1] > 200 and pt[1] < 300:
                     input_crown_location = [2,2]
-                elif location[0] > 300 and location[0] < 400 and location[1] > 200 and location[1] < 300:
+                elif pt[0] > 300 and pt[0] < 400 and pt[1] > 200 and pt[1] < 300:
                     input_crown_location = [2,3]
-                elif location[0] > 400 and location[0] < 500 and location[1] > 200 and location[1] < 300:
+                elif pt[0] > 400 and pt[0] < 500 and pt[1] > 200 and pt[1] < 300:
                     input_crown_location = [2,4]
 
-                elif location[0] > 0 and location[0] < 100 and location[1] > 300 and location[1] < 400:
+                elif pt[0] > 0 and pt[0] < 100 and pt[1] > 300 and pt[1] < 400:
                     input_crown_location = [3,0]
-                elif location[0] > 100 and location[0] < 200 and location[1] > 300 and location[1] < 400:
+                elif pt[0] > 100 and pt[0] < 200 and pt[1] > 300 and pt[1] < 400:
                     input_crown_location = [3,1]
-                elif location[0] > 200 and location[0] < 300 and location[1] > 300 and location[1] < 400:
+                elif pt[0] > 200 and pt[0] < 300 and pt[1] > 300 and pt[1] < 400:
                     input_crown_location = [3,2]
-                elif location[0] > 300 and location[0] < 400 and location[1] > 300 and location[1] < 400:
+                elif pt[0] > 300 and pt[0] < 400 and pt[1] > 300 and pt[1] < 400:
                     input_crown_location = [3,3]
-                elif location[0] > 400 and location[0] < 500 and location[1] > 300 and location[1] < 400:
+                elif pt[0] > 400 and pt[0] < 500 and pt[1] > 300 and pt[1] < 400:
                     input_crown_location = [3,4]
                 
-                elif location[0] > 0 and location[0] < 100 and location[1] > 400 and location[1] < 500:
+                elif pt[0] > 0 and pt[0] < 100 and pt[1] > 400 and pt[1] < 500:
                     input_crown_location = [4,0]
-                elif location[0] > 100 and location[0] < 200 and location[1] > 400 and location[1] < 500:
+                elif pt[0] > 100 and pt[0] < 200 and pt[1] > 400 and pt[1] < 500:
                     input_crown_location = [4,1]
-                elif location[0] > 200 and location[0] < 300 and location[1] > 400 and location[1] < 500:
+                elif pt[0] > 200 and pt[0] < 300 and pt[1] > 400 and pt[1] < 500:
                     input_crown_location = [4,2]
-                elif location[0] > 300 and location[0] < 400 and location[1] > 400 and location[1] < 500:
+                elif pt[0] > 300 and pt[0] < 400 and pt[1] > 400 and pt[1] < 500:
                     input_crown_location = [4,3]
-                elif location[0] > 400 and location[0] < 500 and location[1] > 400 and location[1] < 500:
+                elif pt[0] > 400 and pt[0] < 500 and pt[1] > 400 and pt[1] < 500:
                     input_crown_location = [4,4]
 
         return(input_crown_location)
@@ -95,12 +95,14 @@ class image_handler():
             location = np.where (res >= self.threshold)
 
             for pt in zip(*location[::-1]):
-
+                
                 bottom_right = (pt[0] + w, pt[1] + h)
                 self.img = cv.rectangle(self.img, pt, bottom_right, 0, -1)
                 self.crowns_made.append(pt)
-                input_crown_location = self.find_crown_location(location, pt)
-                self.locate_connections(input_crown_location, pt)
+                for j in range(len(self.crowns_made)):
+                    if (abs(location[0][j] - pt[1]) < 5) and (abs(location[1][j] - pt[0]) < 5):
+                        input_crown_location = self.find_crown_location(location, pt)
+                        self.locate_connections(input_crown_location)
             
     def find_crown_swamp(self):
         #This is for the crown_swamp in all rotations
@@ -122,8 +124,10 @@ class image_handler():
                 bottom_right = (pt[0] + w, pt[1] + h)
                 self.img = cv.rectangle(self.img, pt, bottom_right, 0, -1)
                 self.crowns_made.append(pt)
-                input_crown_location = self.find_crown_location(location, pt)
-                self.locate_connections(input_crown_location, pt)
+                for j in range(len(self.crowns_made)):
+                    if (abs(location[0][j] - pt[1]) < 5) and (abs(location[1][j] - pt[0]) < 5):
+                        input_crown_location = self.find_crown_location(location, pt)
+                        self.locate_connections(input_crown_location)
           
     def find_crown_forrest(self):
         #This is for the crown_forrest in all rotations
@@ -145,8 +149,10 @@ class image_handler():
                 bottom_right = (pt[0] + w, pt[1] + h)
                 self.img = cv.rectangle(self.img, pt, bottom_right, 0, -1)
                 self.crowns_made.append(pt)
-                input_crown_location = self.find_crown_location(location, pt)
-                self.locate_connections(input_crown_location, pt)
+                for j in range(len(self.crowns_made)):
+                    if (abs(location[0][j] - pt[1]) < 5) and (abs(location[1][j] - pt[0]) < 5):
+                        input_crown_location = self.find_crown_location(location, pt)
+                        self.locate_connections(input_crown_location)
                     
     def find_crown_mine(self):
         #This is for the crown_mine in all rotations
@@ -168,8 +174,10 @@ class image_handler():
                 bottom_right = (pt[0] + w, pt[1] + h)
                 self.img = cv.rectangle(self.img, pt, bottom_right, 0, -1)
                 self.crowns_made.append(pt)
-                input_crown_location = self.find_crown_location(location, pt)
-                self.locate_connections(input_crown_location, pt)
+                for j in range(len(self.crowns_made)):
+                    if (abs(location[0][j] - pt[1]) < 5) and (abs(location[1][j] - pt[0]) < 5):
+                        input_crown_location = self.find_crown_location(location, pt)
+                        self.locate_connections(input_crown_location)
           
     def find_crown_corn(self):
         #This is for the crown_corn in all rotations
@@ -191,8 +199,10 @@ class image_handler():
                 bottom_right = (pt[0] + w, pt[1] + h)
                 self.img = cv.rectangle(self.img, pt, bottom_right, 0, -1)
                 self.crowns_made.append(pt)
-                input_crown_location = self.find_crown_location(location, pt)
-                self.locate_connections(input_crown_location, pt)
+                for j in range(len(self.crowns_made)):
+                    if (abs(location[0][j] - pt[1]) < 5) and (abs(location[1][j] - pt[0]) < 5):
+                        input_crown_location = self.find_crown_location(location, pt)
+                        self.locate_connections(input_crown_location)
                                   
     def find_crown_ocean(self):
         #This is for the crown_ocean in all rotations
@@ -213,8 +223,10 @@ class image_handler():
                 bottom_right = (pt[0] + w, pt[1] + h)
                 self.img = cv.rectangle(self.img, pt, bottom_right, 0, -1)
                 self.crowns_made.append(pt)
-                input_crown_location = self.find_crown_location(location,pt)
-                self.locate_connections(input_crown_location, pt)
+                for j in range(len(self.crowns_made)):
+                    if (abs(location[0][j] - pt[1]) < 5) and (abs(location[1][j] - pt[0]) < 5):
+                        input_crown_location = self.find_crown_location(location, pt)
+                        self.locate_connections(input_crown_location)
            
     def find_tower(self):#Function to find the tower and change the color values to 0 to locate it easier.
         #This is for blue castles with no house but kinda works for green and pink as well
@@ -381,7 +393,7 @@ class image_handler():
 
     def locate_connections(self, input_crown_location):
         self.object_array = np.zeros((5, 5), dtype="uint8") 
-        print("input_crown = ", input_crown_location)
+        #print("input_crown = ", input_crown_location)
         if type(input_crown_location) == list: 
             a = 0
             for i in range(self.board_size):
@@ -446,7 +458,6 @@ print("points = ", image_test.point_counter)
 
 image = image_handler()#Desplays the normal picture
 
-print(image_test.landscape_map)
 
 
 mean_resized = cv.resize(image_test.mean_array, [500,500], interpolation = cv.INTER_AREA)
