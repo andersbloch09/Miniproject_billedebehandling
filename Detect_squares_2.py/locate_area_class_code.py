@@ -2,92 +2,16 @@ import numpy as np
 import cv2 as cv
 import statistics as sta
 import math 
-'''     1	28
-        2	42
-        3	52
-        4	42
-        5	36
-        6	43
-        7	41
-        8	42
-        9	45
-        10	38
-        11	49
-        12	22
-        13	45
-        14	38
-        15	49
-        16	22
-        17	55
-        18	60
-        19	36
-        20	52
-        21	40
-        22	60
-        23	36
-        24	52
-        25	44
-        26	48
-        27	67
-        28	65
-        29	44
-        30	48
-        31	67
-        32	65
-        33	21
-        34	36
-        35	46
-        36	51
-        37	21
-        38	36
-        39	46
-        40	51
-        41	33
-        42	43
-        43	66
-        44	33
-        45	28
-        46	43
-        47	66
-        48	42
-        49	26
-        50	34
-        51	37
-        52	42
-        53	23
-        54	34
-        55	37
-        56	44
-        57	64
-        58	36
-        59	38
-        60	44
-        61	64
-        62	36
-        63	38
-        64	66
-        65	80
-        66	124
-        67	99
-        68	66
-        69	124
-        70	99
-        71	66
-        72	80
-        73	124
-        74	99
-        '''
 
 class image_handler():
     def __init__(self):
-        self.pic_num = 4
+        self.pic_num = 54
         self.img = cv.imread(r"King Domino dataset/Cropped and perspective corrected boards/"+str(self.pic_num)+".jpg",1)
         self.board_size = 5
         self.point_counter = 0
         self.crowns_made = [(-500,-500)]
-        self.threshold = 0.65
-        self.threshold_corn = 0.7
-        #self.threshold_swamp = 0.65
+        self.threshold = 0.75
+        self.threshold_corn = 0.65
         self.distance = 8
         self.crown_counter = 0
 
@@ -154,6 +78,7 @@ class image_handler():
     
     def find_crown_mine(self):
         #For downward
+        crown_counter = 0
         self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
         self.template = cv.imread("Detect_squares_2.py/Assests/rotated_images/rotated_template0.png",0)
         w, h = self.template.shape[::-1]
@@ -162,18 +87,18 @@ class image_handler():
 
         for pt in zip(*loc_mine0[::-1]):
             count_this = True
-            for i in range(self.crown_counter):
+            for i in range(crown_counter):
                 if (abs(loc_mine0[0][i] - pt[1]) < self.distance) and (abs(loc_mine0[1][i] - pt[0]) < self.distance):
                     count_this = False
-                    
-            if count_this:
-                self.crown_counter += 1 
+            
+            crown_counter += 1
+            if count_this: 
                 self.img = cv.rectangle(self.img, pt, (pt[0] + w, pt[1] + h), (0,0,255), 2)
                 input_crown_location = self.find_crown_location(pt)
                 self.locate_connections(input_crown_location)
                 
         #For left
-        
+        crown_counter = 0
         self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
         self.template = cv.imread("Detect_squares_2.py/Assests/rotated_images/rotated_template1.png",0)
         w, h = self.template.shape[::-1]
@@ -181,18 +106,18 @@ class image_handler():
         loc_mine1 = np.where(res_mine1 >= self.threshold)
         for pt in zip(*loc_mine1[::-1]):
             count_this = True
-            for i in range(self.crown_counter):
+            for i in range(crown_counter):
                 if (abs(loc_mine1[0][i] - pt[1]) < self.distance) and (abs(loc_mine1[1][i] - pt[0]) < self.distance):
                     count_this = False
                     
-            
+            crown_counter += 1
             if count_this:
-                self.crown_counter += 1 
                 self.img = cv.rectangle(self.img, pt, (pt[0] + w, pt[1] + h), (0,0,255), 2)
                 input_crown_location = self.find_crown_location(pt)
                 self.locate_connections(input_crown_location)
                 
         #For upwards
+        crown_counter = 0
         self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
         self.template = cv.imread("Detect_squares_2.py/Assests/rotated_images/rotated_template2.png",0)
         w, h = self.template.shape[::-1]
@@ -200,18 +125,18 @@ class image_handler():
         loc_mine2 = np.where(res_mine2 >= self.threshold)
         for pt in zip(*loc_mine2[::-1]):
             count_this = True
-            for i in range(self.crown_counter):
+            for i in range(crown_counter):
                 if (abs(loc_mine2[0][i] - pt[1]) < self.distance) and (abs(loc_mine2[1][i] - pt[0]) < self.distance):
                     count_this = False
                     
-           
+            crown_counter += 1
             if count_this:
-                self.crown_counter += 1 
                 self.img = cv.rectangle(self.img, pt, (pt[0] + w, pt[1] + h), (0,0,255), 2)
                 input_crown_location = self.find_crown_location(pt)
                 self.locate_connections(input_crown_location)
                 
         #For right
+        crown_counter = 0
         self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)      
         self.template = cv.imread("Detect_squares_2.py/Assests/rotated_images/rotated_template3.png",0)
         w, h = self.template.shape[::-1]
@@ -219,18 +144,19 @@ class image_handler():
         loc_mine3 = np.where(res_mine3 >= self.threshold)
         for pt in zip(*loc_mine3[::-1]):
             count_this = True
-            for i in range(self.crown_counter):
+            for i in range(crown_counter):
                 if (abs(loc_mine3[0][i] - pt[1]) < self.distance) and (abs(loc_mine3[1][i] - pt[0]) < self.distance):
                     count_this = False
             
+            crown_counter += 1
             if count_this:
-                self.crown_counter += 1 
                 self.img = cv.rectangle(self.img, pt, (pt[0] + w, pt[1] + h), (0,0,255), 2)
                 input_crown_location = self.find_crown_location(pt)
                 self.locate_connections(input_crown_location)
     
     def find_crown_corn(self):#Denne function finder kronerne i corn
         #For downcorn
+        crown_counter = 0
         self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
         self.template = cv.imread("Detect_squares_2.py/Assests/rotated_corn/rotated_template0.png",0)
         w, h = self.template.shape[::-1]
@@ -238,18 +164,18 @@ class image_handler():
         loc_corn0 = np.where(res_corn0 >= self.threshold_corn)
         for pt in zip(*loc_corn0[::-1]):
             count_this = True
-            for i in range(self.crown_counter):
+            for i in range(crown_counter):
                 if (abs(loc_corn0[0][i] - pt[1]) < self.distance) and (abs(loc_corn0[1][i] - pt[0]) < self.distance):
                     count_this = False
                     
-            
+            crown_counter += 1
             if count_this:
-                self.crown_counter += 1 
                 self.img = cv.rectangle(self.img, pt, (pt[0] + w, pt[1] + h), (0,0,255), 2)
                 input_crown_location = self.find_crown_location(pt)
                 self.locate_connections(input_crown_location)
                 
         #For left corn
+        crown_counter = 0
         self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
         self.template = cv.imread("Detect_squares_2.py/Assests/rotated_corn/rotated_template1.png",0)
         w, h = self.template.shape[::-1]
@@ -257,19 +183,18 @@ class image_handler():
         loc_corn1 = np.where(res_corn1 >= self.threshold_corn)
         for pt in zip(*loc_corn1[::-1]):
             count_this = True
-            for i in range(self.crown_counter):
+            for i in range(crown_counter):
                 if (abs(loc_corn1[0][i] - pt[1]) < self.distance) and (abs(loc_corn1[1][i] - pt[0]) < self.distance):
                     count_this = False
                     
-            
+            crown_counter += 1
             if count_this:
-                self.crown_counter += 1 
                 self.img = cv.rectangle(self.img, pt, (pt[0] + w, pt[1] + h), (0,0,255), 2)
                 input_crown_location = self.find_crown_location(pt)
                 self.locate_connections(input_crown_location)
                 
         #For up corn
-     
+        crown_counter = 0
         self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
         self.template = cv.imread("Detect_squares_2.py/Assests/rotated_corn/rotated_template2.png",0)
         w, h = self.template.shape[::-1]
@@ -277,18 +202,17 @@ class image_handler():
         loc_corn2 = np.where(res_corn2 >= self.threshold_corn)
         for pt in zip(*loc_corn2[::-1]):
             count_this = True
-            for i in range(self.crown_counter):
+            for i in range(crown_counter):
                 if (abs(loc_corn2[0][i] - pt[1]) < self.distance) and (abs(loc_corn2[1][i] - pt[0]) < self.distance):
                     count_this = False
                     
-            
+            crown_counter += 1
             if count_this:
-                self.crown_counter += 1 
                 self.img = cv.rectangle(self.img, pt, (pt[0] + w, pt[1] + h), (0,0,255), 2)
                 input_crown_location = self.find_crown_location(pt)
                 self.locate_connections(input_crown_location)
         #For right corn
-      
+        crown_counter = 0 
         self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
         self.template = cv.imread("Detect_squares_2.py/Assests/rotated_corn/rotated_template2.png",0)
         w, h = self.template.shape[::-1]
@@ -296,12 +220,11 @@ class image_handler():
         loc_corn3 = np.where(res_corn3 >= self.threshold_corn)
         for pt in zip(*loc_corn3[::-1]):
             count_this = True
-            for i in range(self.crown_counter):
+            for i in range(crown_counter):
                 if (abs(loc_corn3[0][i] - pt[1]) < self.distance) and (abs(loc_corn3[1][i] - pt[0]) < self.distance):
                     count_this = False
-                    
+            crown_counter += 1
             if count_this:
-                self.crown_counter += 1 
                 self.img = cv.rectangle(self.img, pt, (pt[0] + w, pt[1] + h), (0,0,255), 2)
                 input_crown_location = self.find_crown_location(pt)
                 self.locate_connections(input_crown_location)
@@ -412,13 +335,12 @@ class image_handler():
         for j in range(self.board_size):
             for i in range(self.board_size):
                 b,g,r = self.mean_array[i,j]
-                #print(i,j)
-                #print(self.mean_array[i,j])
+                print(i, j, "b,g,r = ", b,g,r)
                 if b < th_tower[0][1] and g < th_tower[1][1] and r < th_tower[2][1]:
                     self.landscape_map[i,j] = "tower"
                     self.area_map[i,j] = tower
                 elif b >= th_corn[0][0] and b <= th_corn[0][1] and g >= th_corn[1][0] and g <= th_corn[1][1] and r >= th_corn[2][0] and r <= th_corn[2][1]:
-                    if r - g > 30: 
+                    if r - g > 32: 
                         self.landscape_map[i,j] = "not figured"
                         self.area_map[i,j] = not_figured
                     else: 
@@ -471,7 +393,6 @@ class image_handler():
 
     def locate_connections(self, input_crown_location):
         self.object_array = np.zeros((5, 5), dtype="uint8") 
-        #print("input_crown = ", input_crown_location)
         if type(input_crown_location) == list: 
             a = 0
             for i in range(self.board_size):
@@ -521,21 +442,19 @@ class image_handler():
                 self.point_counter = self.point_counter + count_6
             print(self.object_array)
             print("points  =   ",  self.point_counter)
-            
+
+
 image_test = image_handler()
 image_test.find_tower()
 image_test.mean_cal()
 image_test.find_landscape()
 image_test.find_crown_mine()
-#image_test.find_crown_corn()
+image_test.find_crown_corn()
 
-
+print(image_test.landscape_map)
 print("points = ", image_test.point_counter)
 
-image = image_handler()#Desplays the normal picture
-
-
-
+image = image_handler()#Imports the normal picture from class 
 mean_resized = cv.resize(image_test.mean_array, [500,500], interpolation = cv.INTER_AREA)
 
 cv.imshow("mean resized", mean_resized)
