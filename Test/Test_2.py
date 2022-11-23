@@ -5,7 +5,7 @@ from matplotlib import pyplot as plt
 
 board = cv.imread(r"King Domino dataset/Cropped and perspective corrected boards/9.jpg", 1)
 board_gray = cv.cvtColor(board, cv.COLOR_BGR2GRAY)
-threshold = 0.96
+threshold = 0.97
 
 
 templateup = cv.imread(r'Test_pictures/Crown_full.png',0)
