@@ -11,7 +11,7 @@ class image_handler():
         self.point_counter = 0
         self.crowns_made = [(-500,-500)]
         self.b = 0
-        self.threshold = 0.6
+        self.threshold = 0.8
 
     def find_crown_location(self, location, pt):
         input_crown_location = 0
@@ -93,16 +93,16 @@ class image_handler():
             gray_copy = self.gray.copy()
             res = cv.matchTemplate(gray_copy, self.crown_meadow, method)
             location = np.where (res >= self.threshold)
-
+            #pt stands for position
             for pt in zip(*location[::-1]):
                 
                 bottom_right = (pt[0] + w, pt[1] + h)
                 self.img = cv.rectangle(self.img, pt, bottom_right, 0, -1)
-                self.crowns_made.append(pt)
-                for j in range(len(self.crowns_made)):
-                    if (abs(location[0][j] - pt[1]) < 5) and (abs(location[1][j] - pt[0]) < 5):
-                        input_crown_location = self.find_crown_location(location, pt)
-                        self.locate_connections(input_crown_location)
+            self.crowns_made.append(location[0][0])
+            for j in range(len(self.crowns_made)):
+                if (abs(location[0][j] - pt[1]) < 5) and (abs(location[1][j] - pt[0]) < 5):
+                    input_crown_location = self.find_crown_location(location, pt)
+                    self.locate_connections(input_crown_location)
             
     def find_crown_swamp(self):
         #This is for the crown_swamp in all rotations
@@ -123,11 +123,11 @@ class image_handler():
 
                 bottom_right = (pt[0] + w, pt[1] + h)
                 self.img = cv.rectangle(self.img, pt, bottom_right, 0, -1)
-                self.crowns_made.append(pt)
-                for j in range(len(self.crowns_made)):
-                    if (abs(location[0][j] - pt[1]) < 5) and (abs(location[1][j] - pt[0]) < 5):
-                        input_crown_location = self.find_crown_location(location, pt)
-                        self.locate_connections(input_crown_location)
+            self.crowns_made.append(location[0][0])
+            for j in range(len(self.crowns_made)):
+                if (abs(location[0][j] - pt[1]) < 5) and (abs(location[1][j] - pt[0]) < 5):
+                    input_crown_location = self.find_crown_location(location, pt)
+                    self.locate_connections(input_crown_location)
           
     def find_crown_forrest(self):
         #This is for the crown_forrest in all rotations
@@ -148,11 +148,11 @@ class image_handler():
 
                 bottom_right = (pt[0] + w, pt[1] + h)
                 self.img = cv.rectangle(self.img, pt, bottom_right, 0, -1)
-                self.crowns_made.append(pt)
-                for j in range(len(self.crowns_made)):
-                    if (abs(location[0][j] - pt[1]) < 5) and (abs(location[1][j] - pt[0]) < 5):
-                        input_crown_location = self.find_crown_location(location, pt)
-                        self.locate_connections(input_crown_location)
+            self.crowns_made.append(location[0][0])
+            for j in range(len(self.crowns_made)):
+                if (abs(location[0][j] - pt[1]) < 5) and (abs(location[1][j] - pt[0]) < 5):
+                    input_crown_location = self.find_crown_location(location, pt)
+                    self.locate_connections(input_crown_location)
                     
     def find_crown_mine(self):
         #This is for the crown_mine in all rotations
@@ -173,11 +173,11 @@ class image_handler():
 
                 bottom_right = (pt[0] + w, pt[1] + h)
                 self.img = cv.rectangle(self.img, pt, bottom_right, 0, -1)
-                self.crowns_made.append(pt)
-                for j in range(len(self.crowns_made)):
-                    if (abs(location[0][j] - pt[1]) < 5) and (abs(location[1][j] - pt[0]) < 5):
-                        input_crown_location = self.find_crown_location(location, pt)
-                        self.locate_connections(input_crown_location)
+            self.crowns_made.append(location[0][0])
+            for j in range(len(self.crowns_made)):
+                if (abs(location[0][j] - pt[1]) < 5) and (abs(location[1][j] - pt[0]) < 5):
+                    input_crown_location = self.find_crown_location(location, pt)
+                    self.locate_connections(input_crown_location)
           
     def find_crown_corn(self):
         #This is for the crown_corn in all rotations
@@ -198,11 +198,11 @@ class image_handler():
 
                 bottom_right = (pt[0] + w, pt[1] + h)
                 self.img = cv.rectangle(self.img, pt, bottom_right, 0, -1)
-                self.crowns_made.append(pt)
-                for j in range(len(self.crowns_made)):
-                    if (abs(location[0][j] - pt[1]) < 5) and (abs(location[1][j] - pt[0]) < 5):
-                        input_crown_location = self.find_crown_location(location, pt)
-                        self.locate_connections(input_crown_location)
+            self.crowns_made.append(location[0][0])
+            for j in range(len(self.crowns_made)):
+                if (abs(location[0][j] - pt[1]) < 5) and (abs(location[1][j] - pt[0]) < 5):
+                    input_crown_location = self.find_crown_location(location, pt)
+                    self.locate_connections(input_crown_location)
                                   
     def find_crown_ocean(self):
         #This is for the crown_ocean in all rotations
@@ -222,11 +222,11 @@ class image_handler():
 
                 bottom_right = (pt[0] + w, pt[1] + h)
                 self.img = cv.rectangle(self.img, pt, bottom_right, 0, -1)
-                self.crowns_made.append(pt)
-                for j in range(len(self.crowns_made)):
-                    if (abs(location[0][j] - pt[1]) < 5) and (abs(location[1][j] - pt[0]) < 5):
-                        input_crown_location = self.find_crown_location(location, pt)
-                        self.locate_connections(input_crown_location)
+            self.crowns_made.append(location[0][0])
+            for j in range(len(self.crowns_made)):
+                if (abs(location[0][j] - pt[1]) < 5) and (abs(location[1][j] - pt[0]) < 5):
+                    input_crown_location = self.find_crown_location(location, pt)
+                    self.locate_connections(input_crown_location)
            
     def find_tower(self):#Function to find the tower and change the color values to 0 to locate it easier.
         #This is for blue castles with no house but kinda works for green and pink as well
