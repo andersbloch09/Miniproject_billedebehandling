@@ -2,232 +2,384 @@ import numpy as np
 import cv2 as cv
 import statistics as sta
 import math 
+'''     1	28
+        2	42
+        3	52
+        4	42
+        5	36
+        6	43
+        7	41
+        8	42
+        9	45
+        10	38
+        11	49
+        12	22
+        13	45
+        14	38
+        15	49
+        16	22
+        17	55
+        18	60
+        19	36
+        20	52
+        21	40
+        22	60
+        23	36
+        24	52
+        25	44
+        26	48
+        27	67
+        28	65
+        29	44
+        30	48
+        31	67
+        32	65
+        33	21
+        34	36
+        35	46
+        36	51
+        37	21
+        38	36
+        39	46
+        40	51
+        41	33
+        42	43
+        43	66
+        44	33
+        45	28
+        46	43
+        47	66
+        48	42
+        49	26
+        50	34
+        51	37
+        52	42
+        53	23
+        54	34
+        55	37
+        56	44
+        57	64
+        58	36
+        59	38
+        60	44
+        61	64
+        62	36
+        63	38
+        64	66
+        65	80
+        66	124
+        67	99
+        68	66
+        69	124
+        70	99
+        71	66
+        72	80
+        73	124
+        74	99
+        '''
 
 class image_handler():
     def __init__(self):
-        self.pic_num = 4
+        self.pic_num = 28
         self.img = cv.imread(r"King Domino dataset/Cropped and perspective corrected boards/"+str(self.pic_num)+".jpg",1)
         self.board_size = 5
         self.point_counter = 0
         self.crowns_made = [(-500,-500)]
         self.b = 0
-        self.threshold = 0.8
+        self.threshold = 0.70
+        self.threshold_corn = 0.70
+        #self.threshold_swamp = 0.65
+        self.distance = 6
+        self.crown_counter = 0 
 
-    def find_crown_location(self, location, pt):
+    def find_crown_location(self, pt):#Function til at finde crown location i 5,5 arrayet og -
+        #den bliver kaldt hver gang der bliver fundet en krone
         input_crown_location = 0
-        #print("crowns made",self.crowns_made)
-        for i in range(len(self.crowns_made)):
-    
-            if (abs(location[0][i] - pt[1]) < 5) and (abs(location[1][i] - pt[0]) < 5):
-                #print("crown0,crown1",self.crowns_made[i][0],self.crowns_made[i][1], "location0 og 1", location[0],location[1])
-                self.b += 1
-                #print("b = ", self.b, "  i = ", i)
-                if pt[0] > 0 and pt[0] < 100 and pt[1] > 0 and pt[1] < 100:
-                    input_crown_location = [0,0]
-                elif pt[0] > 100 and pt[0] < 200 and pt[1] > 0 and pt[1] < 100:
-                    input_crown_location = [0,1]
-                elif pt[0] > 200 and pt[0] < 300 and pt[1] > 0 and pt[1] < 100:
-                    input_crown_location = [0,2]
-                elif pt[0] > 300 and pt[0] < 400 and pt[1] > 0 and pt[1] < 100:
-                    input_crown_location = [0,3]
-                elif pt[0] > 400 and pt[0] < 500 and pt[1] > 0 and pt[1] < 100:
-                    input_crown_location = [0,4]
-                
-                elif pt[0] > 0 and pt[0] < 100 and pt[1] > 100 and pt[1] < 200:
-                    input_crown_location = [1,0]
-                elif pt[0] > 100 and pt[0] < 200 and pt[1] > 100 and pt[1] < 200:
-                    input_crown_location = [1,1]
-                elif pt[0] > 200 and pt[0] < 300 and pt[1] > 100 and pt[1] < 200:
-                    input_crown_location = [1,2]
-                elif pt[0] > 300 and pt[0] < 400 and pt[1] > 100 and pt[1] < 200:
-                    input_crown_location = [1,3]
-                elif pt[0] > 400 and pt[0] < 500 and pt[1] > 100 and pt[1] < 200:
-                    input_crown_location = [1,4]
+        #Der bliver taget en række adgangen for at se hvilket felt kronen er i
+        if pt[0] > 0 and pt[0] < 100 and pt[1] > 0 and pt[1] < 100:
+            input_crown_location = [0,0]
+        elif pt[0] > 100 and pt[0] < 200 and pt[1] > 0 and pt[1] < 100:
+            input_crown_location = [0,1]
+        elif pt[0] > 200 and pt[0] < 300 and pt[1] > 0 and pt[1] < 100:
+            input_crown_location = [0,2]
+        elif pt[0] > 300 and pt[0] < 400 and pt[1] > 0 and pt[1] < 100:
+            input_crown_location = [0,3]
+        elif pt[0] > 400 and pt[0] < 500 and pt[1] > 0 and pt[1] < 100:
+            input_crown_location = [0,4]
+        
+        elif pt[0] > 0 and pt[0] < 100 and pt[1] > 100 and pt[1] < 200:
+            input_crown_location = [1,0]
+        elif pt[0] > 100 and pt[0] < 200 and pt[1] > 100 and pt[1] < 200:
+            input_crown_location = [1,1]
+        elif pt[0] > 200 and pt[0] < 300 and pt[1] > 100 and pt[1] < 200:
+            input_crown_location = [1,2]
+        elif pt[0] > 300 and pt[0] < 400 and pt[1] > 100 and pt[1] < 200:
+            input_crown_location = [1,3]
+        elif pt[0] > 400 and pt[0] < 500 and pt[1] > 100 and pt[1] < 200:
+            input_crown_location = [1,4]
 
-                elif pt[0] > 0 and pt[0] < 100 and pt[1] > 200 and pt[1] < 300:
-                    input_crown_location = [2,0]
-                elif pt[0] > 100 and pt[0] < 200 and pt[1] > 200 and pt[1] < 300:
-                    input_crown_location = [2,1]
-                elif pt[0] > 200 and pt[0] < 300 and pt[1] > 200 and pt[1] < 300:
-                    input_crown_location = [2,2]
-                elif pt[0] > 300 and pt[0] < 400 and pt[1] > 200 and pt[1] < 300:
-                    input_crown_location = [2,3]
-                elif pt[0] > 400 and pt[0] < 500 and pt[1] > 200 and pt[1] < 300:
-                    input_crown_location = [2,4]
+        elif pt[0] > 0 and pt[0] < 100 and pt[1] > 200 and pt[1] < 300:
+            input_crown_location = [2,0]
+        elif pt[0] > 100 and pt[0] < 200 and pt[1] > 200 and pt[1] < 300:
+            input_crown_location = [2,1]
+        elif pt[0] > 200 and pt[0] < 300 and pt[1] > 200 and pt[1] < 300:
+            input_crown_location = [2,2]
+        elif pt[0] > 300 and pt[0] < 400 and pt[1] > 200 and pt[1] < 300:
+            input_crown_location = [2,3]
+        elif pt[0] > 400 and pt[0] < 500 and pt[1] > 200 and pt[1] < 300:
+            input_crown_location = [2,4]
 
-                elif pt[0] > 0 and pt[0] < 100 and pt[1] > 300 and pt[1] < 400:
-                    input_crown_location = [3,0]
-                elif pt[0] > 100 and pt[0] < 200 and pt[1] > 300 and pt[1] < 400:
-                    input_crown_location = [3,1]
-                elif pt[0] > 200 and pt[0] < 300 and pt[1] > 300 and pt[1] < 400:
-                    input_crown_location = [3,2]
-                elif pt[0] > 300 and pt[0] < 400 and pt[1] > 300 and pt[1] < 400:
-                    input_crown_location = [3,3]
-                elif pt[0] > 400 and pt[0] < 500 and pt[1] > 300 and pt[1] < 400:
-                    input_crown_location = [3,4]
-                
-                elif pt[0] > 0 and pt[0] < 100 and pt[1] > 400 and pt[1] < 500:
-                    input_crown_location = [4,0]
-                elif pt[0] > 100 and pt[0] < 200 and pt[1] > 400 and pt[1] < 500:
-                    input_crown_location = [4,1]
-                elif pt[0] > 200 and pt[0] < 300 and pt[1] > 400 and pt[1] < 500:
-                    input_crown_location = [4,2]
-                elif pt[0] > 300 and pt[0] < 400 and pt[1] > 400 and pt[1] < 500:
-                    input_crown_location = [4,3]
-                elif pt[0] > 400 and pt[0] < 500 and pt[1] > 400 and pt[1] < 500:
-                    input_crown_location = [4,4]
+        elif pt[0] > 0 and pt[0] < 100 and pt[1] > 300 and pt[1] < 400:
+            input_crown_location = [3,0]
+        elif pt[0] > 100 and pt[0] < 200 and pt[1] > 300 and pt[1] < 400:
+            input_crown_location = [3,1]
+        elif pt[0] > 200 and pt[0] < 300 and pt[1] > 300 and pt[1] < 400:
+            input_crown_location = [3,2]
+        elif pt[0] > 300 and pt[0] < 400 and pt[1] > 300 and pt[1] < 400:
+            input_crown_location = [3,3]
+        elif pt[0] > 400 and pt[0] < 500 and pt[1] > 300 and pt[1] < 400:
+            input_crown_location = [3,4]
+        
+        elif pt[0] > 0 and pt[0] < 100 and pt[1] > 400 and pt[1] < 500:
+            input_crown_location = [4,0]
+        elif pt[0] > 100 and pt[0] < 200 and pt[1] > 400 and pt[1] < 500:
+            input_crown_location = [4,1]
+        elif pt[0] > 200 and pt[0] < 300 and pt[1] > 400 and pt[1] < 500:
+            input_crown_location = [4,2]
+        elif pt[0] > 300 and pt[0] < 400 and pt[1] > 400 and pt[1] < 500:
+            input_crown_location = [4,3]
+        elif pt[0] > 400 and pt[0] < 500 and pt[1] > 400 and pt[1] < 500:
+            input_crown_location = [4,4]
 
         return(input_crown_location)
     
-    def find_crown_meadow(self):
-         #This is for the crown_meadow in all rotations
-        self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
-        self.crown_meadow = cv.imread(r"Detect_squares.py/Assests/crown_meadow.jpg", 0)
-    
-        method =  cv.TM_CCORR_NORMED
-        w, h = self.crown_meadow.shape[::-1]
-        
-        for i in range(4):
-            if i > 0: 
-                self.crown_meadow = cv.rotate(self.crown_meadow, cv.ROTATE_90_CLOCKWISE)
-            gray_copy = self.gray.copy()
-            res = cv.matchTemplate(gray_copy, self.crown_meadow, method)
-            location = np.where (res >= self.threshold)
-            #pt stands for position
-            for pt in zip(*location[::-1]):
-                
-                bottom_right = (pt[0] + w, pt[1] + h)
-                self.img = cv.rectangle(self.img, pt, bottom_right, 0, -1)
-            self.crowns_made.append(location[0][0])
-            for j in range(len(self.crowns_made)):
-                if (abs(location[0][j] - pt[1]) < 5) and (abs(location[1][j] - pt[0]) < 5):
-                    input_crown_location = self.find_crown_location(location, pt)
-                    self.locate_connections(input_crown_location)
-            
-    def find_crown_swamp(self):
-        #This is for the crown_swamp in all rotations
-        self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
-        self.crown_swamp = cv.imread(r"Detect_squares.py/Assests/crown_swamp.png", 0)
-
-        method =  cv.TM_CCORR_NORMED
-        w, h = self.crown_swamp.shape[::-1]
-        
-        for i in range(4):
-            if i > 0: 
-                self.crown_swamp = cv.rotate(self.crown_swamp, cv.ROTATE_90_CLOCKWISE)
-            gray_copy = self.gray.copy()
-            res = cv.matchTemplate(gray_copy, self.crown_swamp, method)
-            location = np.where (res >= self.threshold)
-
-            for pt in zip(*location[::-1]):
-
-                bottom_right = (pt[0] + w, pt[1] + h)
-                self.img = cv.rectangle(self.img, pt, bottom_right, 0, -1)
-            self.crowns_made.append(location[0][0])
-            for j in range(len(self.crowns_made)):
-                if (abs(location[0][j] - pt[1]) < 5) and (abs(location[1][j] - pt[0]) < 5):
-                    input_crown_location = self.find_crown_location(location, pt)
-                    self.locate_connections(input_crown_location)
-          
-    def find_crown_forrest(self):
-        #This is for the crown_forrest in all rotations
-        self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
-        self.crown_forrest = cv.imread(r"Detect_squares.py/Assests/crown_mine.png", 0)
-
-        method =  cv.TM_CCORR_NORMED
-        w, h = self.crown_forrest.shape[::-1]
-        
-        for i in range(4):
-            if i > 0: 
-                self.crown_forrest = cv.rotate(self.crown_forrest, cv.ROTATE_90_CLOCKWISE)
-            gray_copy = self.gray.copy()
-            res = cv.matchTemplate(gray_copy, self.crown_forrest, method)
-            location = np.where (res >= self.threshold)
-
-            for pt in zip(*location[::-1]):
-
-                bottom_right = (pt[0] + w, pt[1] + h)
-                self.img = cv.rectangle(self.img, pt, bottom_right, 0, -1)
-            self.crowns_made.append(location[0][0])
-            for j in range(len(self.crowns_made)):
-                if (abs(location[0][j] - pt[1]) < 5) and (abs(location[1][j] - pt[0]) < 5):
-                    input_crown_location = self.find_crown_location(location, pt)
-                    self.locate_connections(input_crown_location)
-                    
     def find_crown_mine(self):
-        #This is for the crown_mine in all rotations
-        self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
-        self.crown_mine = cv.imread(r"Detect_squares.py/Assests/crown_mine.png", 0)
-
-        method = cv.TM_CCORR_NORMED
-        w, h = self.crown_mine.shape[::-1]
+        #For downward
         
-        for i in range(4):
-            if i > 0: 
-                self.crown_mine = cv.rotate(self.crown_mine, cv.ROTATE_90_CLOCKWISE)
-            gray_copy = self.gray.copy()
-            res = cv.matchTemplate(gray_copy, self.crown_mine, method)
-            location = np.where (res >= self.threshold)
-
-            for pt in zip(*location[::-1]):
-
-                bottom_right = (pt[0] + w, pt[1] + h)
-                self.img = cv.rectangle(self.img, pt, bottom_right, 0, -1)
-            self.crowns_made.append(location[0][0])
-            for j in range(len(self.crowns_made)):
-                if (abs(location[0][j] - pt[1]) < 5) and (abs(location[1][j] - pt[0]) < 5):
-                    input_crown_location = self.find_crown_location(location, pt)
-                    self.locate_connections(input_crown_location)
-          
-    def find_crown_corn(self):
-        #This is for the crown_corn in all rotations
         self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
-        self.crown_corn = cv.imread(r"Detect_squares.py/Assests/crown_corn.png", 0)
-
-        method =  cv.TM_CCORR_NORMED
-        w, h = self.crown_corn.shape[::-1]
+        self.template = cv.imread("Detect_squares_2.py/Assests/rotated_images/rotated_template0.png",0)
+        w, h = self.template.shape[::-1]
+        res = cv.matchTemplate(self.gray, self.template, cv.TM_CCOEFF_NORMED)
+        loc = np.where(res >= self.threshold)
+    
+        for pt in zip(*loc[::-1]):
+            count_this = True
+            for i in range(self.crown_counter):
+                if (abs(loc[0][i] - pt[1]) < self.distance) and (abs(loc[1][i] - pt[0]) < self.distance):
+                    count_this = False
+                    
+            self.crown_counter += 1 
+            if count_this:
+                self.img = cv.rectangle(self.img, pt, (pt[0] + w, pt[1] + h), (0,0,255), 2)
+                input_crown_location = self.find_crown_location(pt)
+                self.locate_connections(input_crown_location)
+                
+        #For left
         
-        for i in range(4):
-            if i > 0: 
-                self.crown_corn = cv.rotate(self.crown_corn, cv.ROTATE_90_CLOCKWISE)
-            gray_copy = self.gray.copy()
-            res = cv.matchTemplate(gray_copy, self.crown_corn, method)
-            location = np.where (res >= self.threshold)
-
-            for pt in zip(*location[::-1]):
-
-                bottom_right = (pt[0] + w, pt[1] + h)
-                self.img = cv.rectangle(self.img, pt, bottom_right, 0, -1)
-            self.crowns_made.append(location[0][0])
-            for j in range(len(self.crowns_made)):
-                if (abs(location[0][j] - pt[1]) < 5) and (abs(location[1][j] - pt[0]) < 5):
-                    input_crown_location = self.find_crown_location(location, pt)
-                    self.locate_connections(input_crown_location)
-                                  
-    def find_crown_ocean(self):
-        #This is for the crown_ocean in all rotations
         self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
-        self.crown_ocean = cv.imread(r"Detect_squares.py/Assests/crown_ocean.png", 0)
-        method =  cv.TM_CCORR_NORMED
-        w, h = self.crown_ocean.shape[::-1]
+        self.template = cv.imread("Detect_squares_2.py/Assests/rotated_images/rotated_template1.png",0)
+        w, h = self.template.shape[::-1]
+        res = cv.matchTemplate(self.gray, self.template, cv.TM_CCOEFF_NORMED)
+        loc = np.where(res >= self.threshold)
+        for pt in zip(*loc[::-1]):
+            count_this = True
+            for i in range(self.crown_counter):
+                if (abs(loc[0][i] - pt[1]) < self.distance) and (abs(loc[1][i] - pt[0]) < self.distance):
+                    count_this = False
+                    
+            self.crown_counter += 1 
+            if count_this:
+                self.img = cv.rectangle(self.img, pt, (pt[0] + w, pt[1] + h), (0,0,255), 2)
+                input_crown_location = self.find_crown_location(pt)
+                self.locate_connections(input_crown_location)
+                
+        #For upwards
+        self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
+        self.template = cv.imread("Detect_squares_2.py/Assests/rotated_images/rotated_template2.png",0)
+        w, h = self.template.shape[::-1]
+        res = cv.matchTemplate(self.gray, self.template, cv.TM_CCOEFF_NORMED)
+        self.loc = np.where(res >= self.threshold)
+        for pt in zip(*loc[::-1]):
+            count_this = True
+            for i in range(self.crown_counter):
+                if (abs(loc[0][i] - pt[1]) < self.distance) and (abs(loc[1][i] - pt[0]) < self.distance):
+                    count_this = False
+                    
+            self.crown_counter += 1 
+            if count_this:
+                self.img = cv.rectangle(self.img, pt, (pt[0] + w, pt[1] + h), (0,0,255), 2)
+                input_crown_location = self.find_crown_location(pt)
+                self.locate_connections(input_crown_location)
+                
+        #For right
+        self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)      
+        self.template = cv.imread("Detect_squares_2.py/Assests/rotated_images/rotated_template3.png",0)
+        w, h = self.template.shape[::-1]
+        res = cv.matchTemplate(self.gray, self.template, cv.TM_CCOEFF_NORMED)
+        loc = np.where(res >= self.threshold)
+        for pt in zip(*loc[::-1]):
+            count_this = True
+            for i in range(self.crown_counter):
+                if (abs(loc[0][i] - pt[1]) < self.distance) and (abs(loc[1][i] - pt[0]) < self.distance):
+                    count_this = False
+                    
+            self.crown_counter += 1 
+            if count_this:
+                self.img = cv.rectangle(self.img, pt, (pt[0] + w, pt[1] + h), (0,0,255), 2)
+                input_crown_location = self.find_crown_location(pt)
+                self.locate_connections(input_crown_location)
+    
+    def find_crown_corn(self):#Denne function finder kronerne i corn
+        #For downcorn
+        self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
+        self.template = cv.imread("Detect_squares_2.py/Assests/rotated_corn/rotated_template0.png",0)
+        w, h = self.template.shape[::-1]
+        res = cv.matchTemplate(self.gray, self.template, cv.TM_CCOEFF_NORMED)
+        loc = np.where(res >= self.threshold_corn)
+        for pt in zip(*loc[::-1]):
+            count_this = True
+            for i in range(self.crown_counter):
+                if (abs(loc[0][i] - pt[1]) < self.distance) and (abs(loc[1][i] - pt[0]) < self.distance):
+                    count_this = False
+                    
+            self.crown_counter += 1 
+            if count_this:
+                self.img = cv.rectangle(self.img, pt, (pt[0] + w, pt[1] + h), (0,0,255), 2)
+                input_crown_location = self.find_crown_location(pt)
+                self.locate_connections(input_crown_location)
+                
+        #For left corn
+        self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
+        self.template = cv.imread("Detect_squares_2.py/Assests/rotated_corn/rotated_template1.png",0)
+        w, h = self.template.shape[::-1]
+        res = cv.matchTemplate(self.gray, self.template, cv.TM_CCOEFF_NORMED)
+        loc = np.where(res >= self.threshold_corn)
+        for pt in zip(*loc[::-1]):
+            count_this = True
+            for i in range(self.crown_counter):
+                if (abs(loc[0][i] - pt[1]) < self.distance) and (abs(loc[1][i] - pt[0]) < self.distance):
+                    count_this = False
+                    
+            self.crown_counter += 1 
+            if count_this:
+                self.img = cv.rectangle(self.img, pt, (pt[0] + w, pt[1] + h), (0,0,255), 2)
+                input_crown_location = self.find_crown_location(pt)
+                self.locate_connections(input_crown_location)
+                
+        #For up corn
+     
+        self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
+        self.template = cv.imread("Detect_squares_2.py/Assests/rotated_corn/rotated_template2.png",0)
+        w, h = self.template.shape[::-1]
+        res = cv.matchTemplate(self.gray, self.template, cv.TM_CCOEFF_NORMED)
+        loc = np.where(res >= self.threshold_corn)
+        for pt in zip(*loc[::-1]):
+            count_this = True
+            for i in range(self.crown_counter):
+                if (abs(loc[0][i] - pt[1]) < self.distance) and (abs(loc[1][i] - pt[0]) < self.distance):
+                    count_this = False
+                    
+            self.crown_counter += 1 
+            if count_this:
+                self.img = cv.rectangle(self.img, pt, (pt[0] + w, pt[1] + h), (0,0,255), 2)
+                input_crown_location = self.find_crown_location(pt)
+                self.locate_connections(input_crown_location)
+        #For right corn
+      
+        self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
+        self.template = cv.imread("Detect_squares_2.py/Assests/rotated_corn/rotated_template2.png",0)
+        w, h = self.template.shape[::-1]
+        res = cv.matchTemplate(self.gray, self.template, cv.TM_CCOEFF_NORMED)
+        loc = np.where(res >= self.threshold_corn)
+        for pt in zip(*loc[::-1]):
+            count_this = True
+            for i in range(self.crown_counter):
+                if (abs(loc[0][i] - pt[1]) < self.distance) and (abs(loc[1][i] - pt[0]) < self.distance):
+                    count_this = False
+                    
+            self.crown_counter += 1 
+            if count_this:
+                self.img = cv.rectangle(self.img, pt, (pt[0] + w, pt[1] + h), (0,0,255), 2)
+                input_crown_location = self.find_crown_location(pt)
+                self.locate_connections(input_crown_location)
+
+    '''def find_crown_swamp(self):
+        #For downswamp
+    
+        self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
+        self.template = cv.imread("Detect_squares_2.py/Assests/rotated_swamp/rotated_template0.png",0)
+        w, h = self.template.shape[::-1]
+        res = cv.matchTemplate(self.gray, self.template, cv.TM_CCOEFF_NORMED)
+        self.loc = np.where(res >= self.threshold_corn)
+        for pt in zip(*self.loc[::-1]):
+            count_this = True
+            for i in range(self.crown_counter):
+                if (abs(self.loc[0][i] - pt[1]) < self.distance) and (abs(self.loc[1][i] - pt[0]) < self.distance):
+                    count_this = False
+                    
+            self.crown_counter += 1 
+            if count_this:
+                self.img = cv.rectangle(self.img, pt, (pt[0] + w, pt[1] + h), (0,0,255), 2)
+                input_crown_location = self.find_crown_location(pt)
+                self.locate_connections(input_crown_location)
+                
+        #For left swamp
+       
+        self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
+        self.template = cv.imread("Detect_squares_2.py/Assests/rotated_swamp/rotated_template1.png",0)
+        w, h = self.template.shape[::-1]
+        res = cv.matchTemplate(self.gray, self.template, cv.TM_CCOEFF_NORMED)
+        self.loc = np.where(res >= self.threshold_corn)
+        for pt in zip(*self.loc[::-1]):
+            count_this = True
+            for i in range(self.crown_counter):
+                if (abs(self.loc[0][i] - pt[1]) < self.distance) and (abs(self.loc[1][i] - pt[0]) < self.distance):
+                    count_this = False
+                    
+            self.crown_counter += 1 
+            if count_this:
+                self.img = cv.rectangle(self.img, pt, (pt[0] + w, pt[1] + h), (0,0,255), 2)
+                input_crown_location = self.find_crown_location(pt)
+                self.locate_connections(input_crown_location)
+                
+        #For up swamp
         
-        for i in range(4):
-            if i > 0: 
-                self.crown_ocean = cv.rotate(self.crown_ocean, cv.ROTATE_90_CLOCKWISE)
-            gray_copy = self.gray.copy()
-            res = cv.matchTemplate(gray_copy, self.crown_ocean, method)
-            location = np.where (res >= self.threshold)
+        self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
+        self.template = cv.imread("Detect_squares_2.py/Assests/rotated_swamp/rotated_template2.png",0)
+        w, h = self.template.shape[::-1]
+        res = cv.matchTemplate(self.gray, self.template, cv.TM_CCOEFF_NORMED)
+        self.loc = np.where(res >= self.threshold_corn)
+        for pt in zip(*self.loc[::-1]):
+            count_this = True
+            for i in range(self.crown_counter):
+                if (abs(self.loc[0][i] - pt[1]) < self.distance) and (abs(self.loc[1][i] - pt[0]) < self.distance):
+                    count_this = False
+                    
+            self.crown_counter += 1 
+            if count_this:
+                self.img = cv.rectangle(self.img, pt, (pt[0] + w, pt[1] + h), (0,0,255), 2)
+                input_crown_location = self.find_crown_location(pt)
+                self.locate_connections(input_crown_location)
+        #For right swamp
+     
+        self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
+        self.template = cv.imread("Detect_squares_2.py/Assests/rotated_swamp/rotated_template2.png",0)
+        w, h = self.template.shape[::-1]
+        res = cv.matchTemplate(self.gray, self.template, cv.TM_CCOEFF_NORMED)
+        self.loc = np.where(res >= self.threshold_corn)
+        for pt in zip(*self.loc[::-1]):
+            count_this = True
+            for i in range(self.crown_counter):
+                if (abs(self.loc[0][i] - pt[1]) < self.distance) and (abs(self.loc[1][i] - pt[0]) < self.distance):
+                    count_this = False
+                    
+            self.crown_counter += 1 
+            if count_this:
+                self.img = cv.rectangle(self.img, pt, (pt[0] + w, pt[1] + h), (0,0,255), 2)
+                input_crown_location = self.find_crown_location(pt)
+                self.locate_connections(input_crown_location)'''
 
-            for pt in zip(*location[::-1]):
-
-                bottom_right = (pt[0] + w, pt[1] + h)
-                self.img = cv.rectangle(self.img, pt, bottom_right, 0, -1)
-            self.crowns_made.append(location[0][0])
-            for j in range(len(self.crowns_made)):
-                if (abs(location[0][j] - pt[1]) < 5) and (abs(location[1][j] - pt[0]) < 5):
-                    input_crown_location = self.find_crown_location(location, pt)
-                    self.locate_connections(input_crown_location)
-           
+                
     def find_tower(self):#Function to find the tower and change the color values to 0 to locate it easier.
         #This is for blue castles with no house but kinda works for green and pink as well
         self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
@@ -448,12 +600,10 @@ image_test = image_handler()
 image_test.find_tower()
 image_test.mean_cal()
 image_test.find_landscape()
-image_test.find_crown_ocean()
-image_test.find_crown_corn()
-image_test.find_crown_forrest()
 image_test.find_crown_mine()
-image_test.find_crown_swamp()
-image_test.find_crown_meadow()
+image_test.find_crown_corn()
+
+
 print("points = ", image_test.point_counter)
 
 image = image_handler()#Desplays the normal picture
