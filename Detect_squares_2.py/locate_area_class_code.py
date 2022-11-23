@@ -5,7 +5,7 @@ import math
 
 class image_handler():
     def __init__(self):
-        self.pic_num = 54
+        self.pic_num = 27
         self.img = cv.imread(r"King Domino dataset/Cropped and perspective corrected boards/"+str(self.pic_num)+".jpg",1)
         self.board_size = 5
         self.point_counter = 0
@@ -335,7 +335,7 @@ class image_handler():
         for j in range(self.board_size):
             for i in range(self.board_size):
                 b,g,r = self.mean_array[i,j]
-                print(i, j, "b,g,r = ", b,g,r)
+                #print(i, j, "b,g,r = ", b,g,r)
                 if b < th_tower[0][1] and g < th_tower[1][1] and r < th_tower[2][1]:
                     self.landscape_map[i,j] = "tower"
                     self.area_map[i,j] = tower
@@ -399,16 +399,21 @@ class image_handler():
                 for j in range(self.board_size):
                     if self.area_map[i,j] == self.area_map[input_crown_location[0], input_crown_location[1]]:
                         self.object_array[i,j] = a 
+    
                         if self.object_array[i,j-1] != 0 or self.object_array[i-1,j] != 0:
                             if self.object_array[i,j-1] != 0:
                                 self.object_array[i,j] = self.object_array[i,j-1]
+
                             if self.object_array[i-1,j] != 0:
                                 self.object_array[i,j] = self.object_array[i-1,j]
+                                if self.object_array[i,j-1] != 0:
+                                    self.object_array[i,j-1] = self.object_array[i-1,j]
+
                                 if self.object_array[i-1,j] == a-1:
                                     for k in range(self.board_size):
                                         for l in range(self.board_size):
                                             if self.object_array[k,l] == a: 
-                                                self.object_array[k,l] = a-1 
+                                                self.object_array[k,l] = a-1
                                     a -= 1                
                         else:
                             a += 1
