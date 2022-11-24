@@ -5,7 +5,7 @@ import math
 
 class image_handler():
     def __init__(self):
-        self.pic_num = 27
+        self.pic_num = 50
         self.img = cv.imread(r"King Domino dataset/Cropped and perspective corrected boards/"+str(self.pic_num)+".jpg",1)
         self.board_size = 5
         self.point_counter = 0
@@ -447,7 +447,6 @@ class image_handler():
                 self.point_counter = self.point_counter + count_6
             print(self.object_array)
             print("points  =   ",  self.point_counter)
-
 
 image_test = image_handler()
 image_test.find_tower()
