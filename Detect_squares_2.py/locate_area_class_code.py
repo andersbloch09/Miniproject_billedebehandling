@@ -4,6 +4,7 @@ import statistics as sta
 import math 
 
 class image_handler():
+    #First all the global variables are declared
     def __init__(self):
         self.pic_num = 50
         self.img = cv.imread(r"King Domino dataset/Cropped and perspective corrected boards/"+str(self.pic_num)+".jpg",1)
@@ -15,10 +16,12 @@ class image_handler():
         self.distance = 8
         self.crown_counter = 0
 
-    def find_crown_location(self, pt):#Function til at finde crown location i 5,5 arrayet og -
-        #den bliver kaldt hver gang der bliver fundet en krone
+    def find_crown_location(self, pt):
+        #Function to find the crown location in a 5,5 array 
+        #The function is called every time a crown is found
+        
         input_crown_location = 0
-        #Der bliver taget en række adgangen for at se hvilket felt kronen er i
+        #It checks one square at a time to find out where the crown is
         if pt[0] > 0 and pt[0] < 100 and pt[1] > 0 and pt[1] < 100:
             input_crown_location = [0,0]
         elif pt[0] > 100 and pt[0] < 200 and pt[1] > 0 and pt[1] < 100:
@@ -76,7 +79,9 @@ class image_handler():
 
         return(input_crown_location)
     
-    def find_crown_mine(self):
+    def find_crown_mine(self): 
+        #This function finds crowns by use of opencv template matching
+        #It continues to do so for all rotations 
         #For downward
         crown_counter = 0
         self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
@@ -154,7 +159,9 @@ class image_handler():
                 input_crown_location = self.find_crown_location(pt)
                 self.locate_connections(input_crown_location)
     
-    def find_crown_corn(self):#Denne function finder kronerne i corn
+    def find_crown_corn(self):
+        #This function finds crowns by use of opencv template matching
+        #It continues to do so for all rotations 
         #For downcorn
         crown_counter = 0
         self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
@@ -230,6 +237,8 @@ class image_handler():
                 self.locate_connections(input_crown_location)
 
     def find_tower(self):#Function to find the tower and change the color values to 0 to locate it easier.
+        #The function works as the find crown functions by using template matching.
+        #This function just uses all the different template matching methods to find the castles.  
         #This is for blue castles with no house but kinda works for green and pink as well
         self.gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
         self.template_tower_n_h = cv.imread(r"Detect_squares.py/Assests/castle_n_h_blue_rotated.png", 0)#tower with no house on.
@@ -294,6 +303,7 @@ class image_handler():
                     self.img = cv.rectangle(self.img, location, bottom_right, 0, -1)
                 
     def mean_cal(self):
+        #The function adds the RGB values in three arrays to make a new image of the mean values. 
         self.mean_array = np.zeros((5, 5, 3), dtype='uint8')
         for j in range(self.board_size):
             for i in range(self.board_size):
@@ -315,6 +325,7 @@ class image_handler():
                 self.mean_array[i,j] = (b_mean, g_mean, r_mean)
 
     def find_landscape(self):
+        #The function seperates different area types with thresholds and assign a area type a specific numer given in the top.
         corn = 1
         ocean = 2
         meadow = 3
@@ -392,6 +403,8 @@ class image_handler():
                     self.area_map[i,j] = not_figured
 
     def locate_connections(self, input_crown_location):
+        #To count points the crowns are added with the amount of squares in one group. 
+        #First the function makes the groups and lastly it adds them with the crown location. 
         self.object_array = np.zeros((5, 5), dtype="uint8") 
         if type(input_crown_location) == list: 
             a = 0
@@ -448,6 +461,7 @@ class image_handler():
             print(self.object_array)
             print("points  =   ",  self.point_counter)
 
+#Here all the functions of the class are called
 image_test = image_handler()
 image_test.find_tower()
 image_test.mean_cal()
@@ -461,6 +475,7 @@ print("points = ", image_test.point_counter)
 image = image_handler()#Imports the normal picture from class 
 mean_resized = cv.resize(image_test.mean_array, [500,500], interpolation = cv.INTER_AREA)
 
+#This shows the different images 
 cv.imshow("mean resized", mean_resized)
 cv.imshow("img",image_test.img)
 cv.imshow("img no change", image.img)
